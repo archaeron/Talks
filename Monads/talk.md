@@ -1,5 +1,9 @@
 # Haskell Dojo
 
+Basiert auf Philip Wadlers "Monads for functional programming"
+
+http://homepages.inf.ed.ac.uk/wadler/topics/monads.html
+
 ***
 
 ## Haskell Einführung
