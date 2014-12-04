@@ -71,6 +71,8 @@ type Exception = String
 
 ## Beispiel Division
 
+---
+
 ### Simpel
 
 ```haskell
@@ -86,6 +88,8 @@ error          :: Term
 error          =  Div (Con 1) (Con 0)
 
 ```
+
+---
 
 ```haskell
 eval           :: Term -> Int
@@ -104,6 +108,7 @@ eval answer
 -- 42
 ```
 
+---
 
 ```haskell
 eval           :: Term -> Int
@@ -162,6 +167,8 @@ eval (Div t u) x =
     (a / b, z + 1)
 
 ```
+
+***
 
 ## Monads
 
