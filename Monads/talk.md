@@ -1,3 +1,6 @@
+% Monads Dojo
+% Nicolas
+
 # Haskell Dojo
 
 Basiert auf Philip Wadlers "Monads for functional programming"
