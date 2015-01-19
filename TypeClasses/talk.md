@@ -1,76 +1,4 @@
-% Monads Dojo
-% Nicolas
-
-# Haskell Dojo
-
-Basiert auf Philip Wadlers "Monads for functional programming"
-
-http://homepages.inf.ed.ac.uk/wadler/topics/monads.html
-
-***
-
-## Haskell Einführung
-
----
-
-```haskell
-add      :: Int -> Int -> Int
-add x y  =  x + y
-```
-
----
-
-```haskell
-add      :: Int -> Int -> Int
-add x y  =  x + y
-
-add42    :: Int -> Int
-add42    =  add 42
-```
-
----
-
-```haskell
-numbers  :: [Int]
-numbers  =  [1, 2, 3, 4, 5]
-```
-
----
-
-```haskell
-numbers  :: [Int]
-numbers  =  [1, 2, 3, 4, 5]
-
-map        :: (a -> b) -> [a] -> [b]
-add42      :: Int -> Int
-
-```
-
----
-
-```haskell
-numbers  :: [Int]
-numbers  =  [1, 2, 3, 4, 5]
-
-map        :: (a -> b) -> [a] -> [b]
-add42      :: Int -> Int
-
-map add42  :: [Int] -> [Int]
-
-numbers2   =  map add42 numbers
-
-```
-
----
-
-
-```haskell
-data Boolean = True | False
-type Exception = String
-
-```
-
-***
+# Type Classes
 
 ## Beispiel Division
 
@@ -153,7 +81,7 @@ eval (Div t u) =
                         Return (a / b)
 
 ```
-                    
+
 ## Mit Divisionszähler
 
 ```haskell
@@ -194,8 +122,8 @@ n             :: M b
 \a -> n       :: a -> M b
 m >>= \a -> n :: M b
 ```
-                    
-                  
+
+
 ```haskell
 m >>= \a -> n
 ```
@@ -210,7 +138,7 @@ n;
 
 ```
 in einer "unreinen" Sprache.
-                    
+
 
 ```haskell
 eval :: Term -> M Int
