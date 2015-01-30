@@ -1,5 +1,26 @@
 # Typeclasses (Purescript)
 
+## Einführung
+
+```haskell
+class Show a where
+  show :: a -> String
+
+
+instance Show Boolean where
+  show true = "true"
+  show false = "false"
+```
+
+```haskell
+class Eq a where
+  (==) :: a -> a -> Bool
+  (/=) :: a -> a -> Bool
+
+data Ordering = LT | EQ | GT
+class Eq a => Ord a where
+  compare :: a -> a -> Ordering
+```
 
 ## Theorie
 
