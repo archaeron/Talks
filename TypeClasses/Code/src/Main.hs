@@ -7,20 +7,28 @@ import Control.Monad (liftM)
 
 import TypeClasses
 
-instance (Eq a) => Eq (Option a) where
-  (Some x) == (Some y) = x == y
-  None == None = True
-  _ == _ = False
-
 instance Arbitrary a => Arbitrary (Option a) where
   arbitrary = frequency [(1, return None), (3, liftM Some arbitrary)]
 
   shrink (Some x) = None : [ Some x' | x' <- shrink x ]
   shrink _        = []
 
+optionNeq :: (Eq a) => Option a -> Option a -> Bool
+optionNeq (Some a) (Some b) = a /= b
+optionNeq None None = False
+optionNeq _ _ = True
+
+
 main :: IO ()
 main = hspec $ do
   describe "Option" $ do
+    it "equal should be implemented correctly 1" $
+      property $ \opt -> opt == (opt :: Option String)
+
+    it "equal should be implemented correctly 2" $
+      property $ \(opt1, opt2) ->
+        opt1 /= opt2 ==> optionNeq (opt1 :: Option String) (opt2 :: Option String)
+
     it "follows the functor laws: fmap id = id" $
       property $ \opt -> fmap id opt == (opt :: Option Int)
 
