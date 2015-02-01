@@ -6,7 +6,6 @@
 class Show a where
   show :: a -> String
 
-
 instance Show Boolean where
   show true = "true"
   show false = "false"
@@ -31,7 +30,7 @@ The `(<>)` operator is for 'concatenation', and must be associative:
 
 ```haskell
 class Semigroup a where
-  (<>) :: forall a.a -> a -> a
+  (<>) :: forall a. a -> a -> a
 ```
 
 ### Monoid
