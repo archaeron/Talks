@@ -39,3 +39,13 @@ main = hspec $ do
         where
           add5 n = n + 5
           mul7 n = n * 7
+
+          --http://hackage.haskell.org/package/base-4.6.0.1/docs/Control-Applicative.html#t:Applicative
+          --identity
+          --pure id <*> v = v
+          --composition
+          --pure (.) <*> u <*> v <*> w = u <*> (v <*> w)
+          --homomorphism
+          --pure f <*> pure x = pure (f x)
+          --interchange
+          --u <*> pure y = pure ($ y) <*> u
