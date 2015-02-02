@@ -7,6 +7,7 @@ import Control.Monad (liftM)
 import Control.Applicative (pure, (<*>))
 
 import TypeClasses
+import Parser
 
 instance Arbitrary a => Arbitrary (Option a) where
   arbitrary = frequency [(1, return None), (3, liftM Some arbitrary)]
