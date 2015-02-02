@@ -4,8 +4,7 @@ import Control.Applicative
 
 data Option a =
     Some a | None
-    deriving (Show)
-
+    
 instance (Show a) => Show (Option a) where
     show (Some a) = "Some " ++ show a
     show None = "None"
