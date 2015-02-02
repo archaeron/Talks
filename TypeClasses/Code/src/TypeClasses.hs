@@ -1,10 +1,10 @@
 module TypeClasses where
 
-import Control.Applicative
+import Control.Applicative (Applicative, pure, (<*>))
 
 data Option a =
     Some a | None
-    
+
 instance (Show a) => Show (Option a) where
     show (Some a) = "Some " ++ show a
     show None = "None"
