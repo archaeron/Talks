@@ -21,24 +21,28 @@ optionNeq _ _ = True
 
 main :: IO ()
 main = hspec $ do
-  describe "Option" $ do
-    it "equal should be implemented correctly 1" $
-      property $ \opt -> opt == (opt :: Option String)
+    describe "Option" $ do
+        it "returns the first element of a list" $ do
+            head [23 ..] `shouldBe` (23 :: Int)
 
-    it "equal should be implemented correctly 2" $
-      property $ \(opt1, opt2) ->
-        opt1 /= opt2 ==> optionNeq (opt1 :: Option String) (opt2 :: Option String)
+        it "equal should be implemented correctly 1" $
+            property $ \opt -> opt == (opt :: Option String)
 
-    it "follows the functor laws: fmap id = id" $
-      property $ \opt -> fmap id opt == (opt :: Option Int)
+        it "equal should be implemented correctly 2" $
+            property $ \(opt1, opt2) ->
+                opt1 /= opt2 ==>
+                    optionNeq (opt1 :: Option String) (opt2 :: Option String)
 
-    it "follows the functor laws: fmap (p . q) = (fmap p) . (fmap q)" $
-      property $
-        \opt ->
-          fmap (add5 . mul7) (opt :: Option Int) == ((fmap add5) . (fmap mul7) $ opt)
-        where
-          add5 n = n + 5
-          mul7 n = n * 7
+        it "follows the functor laws: fmap id = id" $
+            property $ \opt -> fmap id opt == (opt :: Option Int)
+
+        it "follows the functor laws: fmap (p . q) = (fmap p) . (fmap q)" $
+            property $
+                \opt ->
+                    fmap (add5 . mul7) (opt :: Option Int) == ((fmap add5) . (fmap mul7) $ opt)
+                where
+                    add5 n = n + 5
+                    mul7 n = n * 7
 
           --http://hackage.haskell.org/package/base-4.6.0.1/docs/Control-Applicative.html#t:Applicative
           --identity
