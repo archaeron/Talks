@@ -85,3 +85,26 @@ main = hspec $ do
 					in
 						(someAdd <*> (pure (opt :: Int))) ==
 							(pure (\f -> f opt) <*> someAdd)
+
+        it "follows the monad laws: return a >>= k = k a" $
+            property $
+                \opt ->
+                    let
+                        add5Some n = Some $ n + 5
+                    in
+                        ((return (opt :: Int)) >>= add5Some) == add5Some opt
+
+        it "follows the monad laws: m >>= return = m" $
+            property $
+                \opt ->
+                    ((opt :: Option String) >>= return) == opt
+
+        it "follows the monad laws: m >>= (\\x -> k x >>= h) = (m >>= k) >>= h" $
+            property $
+                \opt ->
+                    let
+                        add5Some n = Some $ n + 5
+                        mul7Some n = Some $ n + 5
+                    in
+                        ((opt :: Option Int) >>= (\x -> add5Some x >>= mul7Some)) ==
+                            ((opt >>= add5Some) >>= mul7Some)
