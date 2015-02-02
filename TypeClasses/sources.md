@@ -12,3 +12,6 @@ Learn You a Haskell for Great Good
 Introduction to Functional Programming
   - Erik Meijer
   - https://www.edx.org/course/introduction-functional-programming-delftx-fp101x
+What I Wish I Knew When Learning Haskell
+  - Stephen Diehl
+  - http://dev.stephendiehl.com/hask/#applicatives
