@@ -14,6 +14,10 @@ Nicolas Gagliani
 
 Daniel Weber
 
-## Curiously recurring template pattern & Metaprogramming
+## Curiously recurring template pattern
+
+Florian Tanner
+
+## Einführung in die Metaprogrammierung
 
 Florian Tanner
