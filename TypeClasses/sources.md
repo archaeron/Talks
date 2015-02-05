@@ -15,3 +15,6 @@ Introduction to Functional Programming
 What I Wish I Knew When Learning Haskell
   - Stephen Diehl
   - http://dev.stephendiehl.com/hask/#applicatives
+Programming in Haskell
+  - Graham Hutton
+  - http://www.cs.nott.ac.uk/~gmh/book.html
