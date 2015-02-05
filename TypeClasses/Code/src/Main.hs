@@ -123,3 +123,14 @@ parserTests = describe "Parser" $ do
 		property $
 			\opt ->
 				parse failure opt == (Nothing :: Maybe (Char, String))
+
+	it "item should retrieve the first element" $ do
+		parse item "Hello" `shouldBe` Just ('H', "ello")
+		parse item "a" `shouldBe` Just ('a', "")
+		parse item "" `shouldBe` Nothing
+
+	it "(+++) works correctly" $ do
+		parse (item +++ item) "Hello" `shouldBe` Just ('H', "ello")
+		parse (item +++ failure) "Hello" `shouldBe` Just ('H', "ello")
+		parse (failure +++ item) "Hello" `shouldBe` Just ('H', "ello")
+		parse (failure +++ failure) "Hello" `shouldBe` (Nothing :: Maybe (Char, String))
