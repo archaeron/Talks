@@ -21,3 +21,7 @@ Florian Tanner
 ## Einführung in die Metaprogrammierung
 
 Florian Tanner
+
+## Introduction to image recognition
+
+David Sommer
