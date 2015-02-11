@@ -123,3 +123,12 @@ parserTests = describe "Parser" $ do
 		property $
 			\opt ->
 				parse failure opt == (Nothing :: Maybe (Char, String))
+
+	it "item works" $
+		property $
+			\opt ->
+				if opt /= ""
+				then
+					fmap (\(x, xs) -> x:xs) (parse item opt) == return opt
+				else
+					(parse item opt) == Nothing
