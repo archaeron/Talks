@@ -11,10 +11,10 @@ import TypeClasses
 import Parser
 
 instance Arbitrary a => Arbitrary (Option a) where
-  arbitrary = frequency [(1, return None), (3, liftM Some arbitrary)]
+	arbitrary = frequency [(1, return None), (3, liftM Some arbitrary)]
 
-  shrink (Some x) = None : [ Some x' | x' <- shrink x ]
-  shrink _ = []
+	shrink (Some x) = None : [ Some x' | x' <- shrink x ]
+	shrink _ = []
 
 optionNeq :: (Eq a) => Option a -> Option a -> Bool
 optionNeq (Some a) (Some b) = a /= b
