@@ -31,7 +31,7 @@ parse (Parser p) = p
 
 -- this parser always fails
 failure :: Parser a
-failure	= Parser $ const Nothing
+failure = Parser $ const Nothing
 
 item :: Parser Char
 item =
@@ -44,14 +44,14 @@ item =
 		)
 
 (+++) :: Parser a -> Parser a -> Parser a
-p +++ q	=
+p +++ q =
 	Parser (\inp -> case parse p inp of
 		Nothing	->
 			parse q inp
 		value ->
 			value)
 
-sat	:: (Char -> Bool) -> Parser Char
+sat :: (Char -> Bool) -> Parser Char
 sat p =
 	do	x <- item
 		if p x then return x else failure
