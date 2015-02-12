@@ -96,7 +96,7 @@ sepBy1 p sep =
 		as <- many $ do
 			sep
 			p
-		return (a : as)
+		return (a:as)
 
 sepBy :: Parser a -> Parser sep -> Parser [a]
 sepBy p sep	= (sepBy1 p sep) +++ return []
