@@ -90,9 +90,13 @@ many1 p =
 		vs <- many p
 		return (v:vs)
 
+sepBy1 :: Parser a -> Parser sep -> Parser [a]
+sepBy1 p sep =
+	do	a <- p
+		as <- many $ do
+			sep
+			p
+		return (a : as)
+
 sepBy :: Parser a -> Parser sep -> Parser [a]
-sepBy p sep	=
-	do	element <- p
-		_ <- sep
-		rest <- (sepBy p sep +++ return [])
-		return $ element : rest
+sepBy p sep	= (sepBy1 p sep) +++ return []

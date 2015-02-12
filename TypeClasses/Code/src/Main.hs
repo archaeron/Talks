@@ -167,3 +167,11 @@ parserTests = describe "Parser" $ do
 		parse (many1 digit) "123Hello" `shouldBe` Just (['1', '2', '3'], "Hello")
 		parse (many1 digit) "Hello" `shouldBe` Nothing
 
+	it "sepBy works correctly" $ do
+		parse (sepBy1 digit (char ',')) "1,2,3" `shouldBe` Just ("123", "")
+		parse (sepBy1 digit (char '-')) "1,2,3" `shouldBe` Just ("1", ",2,3")
+		parse (sepBy1 letter (char ',')) "1,2,3" `shouldBe` Nothing
+
+		parse (sepBy digit (char ',')) "1,2,3" `shouldBe` Just ("123", "")
+		parse (sepBy digit (char '-')) "1,2,3" `shouldBe` Just ("1", ",2,3")
+		parse (sepBy letter (char ',')) "1,2,3" `shouldBe` Just ([], "1,2,3")
