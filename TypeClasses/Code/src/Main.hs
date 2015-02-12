@@ -143,3 +143,27 @@ parserTests = describe "Parser" $ do
 		parse (item +++ failure) "Hello" `shouldBe` Just ('H', "ello")
 		parse (failure +++ item) "Hello" `shouldBe` Just ('H', "ello")
 		parse (failure +++ failure) "Hello" `shouldBe` (Nothing :: Maybe (Char, String))
+
+	it "sat works correctly" $ do
+		parse digit "123" `shouldBe` Just ('1', "23")
+		parse lower "Hello" `shouldBe` Nothing
+		parse letter "1Hello" `shouldBe` Nothing
+		parse (char 'H') "Hello" `shouldBe` Just ('H', "ello")
+		parse (char 'e') "Hello" `shouldBe` Nothing
+
+	it "string works correctly" $ do
+		parse (string "12") "123" `shouldBe` Just ("12", "3")
+		parse (string "ello") "Hello" `shouldBe` Nothing
+		parse (string "H") "Hello" `shouldBe` Just ("H", "ello")
+		parse (string "") "Hello" `shouldBe` Just ("", "Hello")
+		parse (string "He") "" `shouldBe` Nothing
+		parse (string "hello") "hel" `shouldBe` Nothing
+
+	it "many and many1 work correctly" $ do
+		parse (many (string "12")) "12123" `shouldBe` Just (["12", "12"], "3")
+		parse (many digit) "123Hello" `shouldBe` Just (['1', '2', '3'], "Hello")
+		parse (many digit) "Hello" `shouldBe` Just ([], "Hello")
+		parse (many1 (string "12")) "12123" `shouldBe` Just (["12", "12"], "3")
+		parse (many1 digit) "123Hello" `shouldBe` Just (['1', '2', '3'], "Hello")
+		parse (many1 digit) "Hello" `shouldBe` Nothing
+

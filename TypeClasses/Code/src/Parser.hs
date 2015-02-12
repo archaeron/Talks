@@ -93,33 +93,6 @@ many1 p =
 sepBy :: Parser a -> Parser sep -> Parser [a]
 sepBy p sep	=
 	do	element <- p
-		return []
-
-ident :: Parser String
-ident =
-	do	x <- lower
-		xs <- many alphanum
-		return (x:xs)
-
-nat	:: Parser Int
-nat	=
-	do	xs <- many1 digit
-		return (read xs)
-
-int	:: Parser Int
-int	=
-	(do	char '-'
-		n <- nat
-		return (-n))
-	+++ nat
-
-space :: Parser ()
-space =
-	do	many (sat isSpace)
-		return ()
-
-comment	:: Parser ()
-comment	=
-	do	string "---"
-		many (sat (/= '\n'))
-		return ()
+		_ <- sep
+		rest <- (sepBy p sep +++ return [])
+		return $ element : rest
