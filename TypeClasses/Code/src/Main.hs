@@ -6,9 +6,11 @@ import Control.Exception (evaluate)
 import Control.Monad (liftM)
 import Control.Applicative (pure, (<*>))
 import Data.Char
+import qualified Data.Map.Strict as Map
 
 import TypeClasses
 import Parser
+import JsonParser
 
 instance Arbitrary a => Arbitrary (Option a) where
 	arbitrary = frequency [(1, return None), (3, liftM Some arbitrary)]
@@ -26,6 +28,7 @@ main :: IO ()
 main = hspec $ do
 	optionTests
 	parserTests
+	jsonTests
 
 optionTests = describe "Option" $ do
 
@@ -175,3 +178,17 @@ parserTests = describe "Parser" $ do
 		parse (sepBy digit (char ',')) "1,2,3" `shouldBe` Just ("123", "")
 		parse (sepBy digit (char '-')) "1,2,3" `shouldBe` Just ("1", ",2,3")
 		parse (sepBy letter (char ',')) "1,2,3" `shouldBe` Just ([], "1,2,3")
+
+jsonTests = describe "jSON" $ do
+	it "converts correctly to strings" $ do
+		let jbool = JBool True
+		let jnumber = JNumber 56
+		let jstring = JString "Hello World"
+		let jarray = JArray [jbool, jnumber, jstring]
+		let jobject = JObject $ Map.fromList [("bool", jbool), ("number", jnumber), ("string", jstring)]
+
+		valueToString jbool `shouldBe` "true"
+		valueToString jnumber `shouldBe` "56"
+		valueToString jstring `shouldBe` "\"Hello World\""
+		valueToString jarray `shouldBe` "[true, 56, \"Hello World\"]"
+		valueToString jobject `shouldBe` "{\"bool\": true, \"number\": 56, \"string\": \"Hello World\"}"

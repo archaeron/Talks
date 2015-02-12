@@ -61,6 +61,7 @@ Executable typeclasses
   build-depends:       base >=4.7 && <4.8
                     ,  hspec
                     ,  QuickCheck
+                    ,  containers
 
   -- Directories containing source files.
   hs-source-dirs:      src
