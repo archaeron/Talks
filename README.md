@@ -25,3 +25,11 @@ Florian Tanner
 ## Introduction to image recognition
 
 David Sommer
+
+## Dependent Types in Idris
+
+Nicolas Gagliani
+
+## Gameprogramming in Purescript
+
+Nicolas Gagliani
