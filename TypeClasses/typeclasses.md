@@ -119,13 +119,31 @@ class (Semigroupoid a) <= Category a where
 class (Applicative m, Bind m) <= Monad m where
 ```
 
-(von https://hackage.haskell.org/package/semigroupoids)
+## Applicative validation
+
+```haskell
+> import Control.Applicative
+>
+> data Address = Address { street :: String, city :: String, canton :: String }
+>
+> liftA3 Address (Just "Gutestr. 45") (Just "Zürich") (Just "Zürich")
+< Just (Address {street = "Gutestr. 45", city = "Zürich", canton = "Zürich"})
+> liftA3 Address (Just "a") (Just "b") Nothing
+< Nothing
 ```
-Foldable ----> Traversable <--- Functor ------> Alt ---------> Plus           Semigroupoid
-|               |                 |                              |                  |
-v               v                 v                              v                  v
-Foldable1 ---> Traversable1     Apply --------> Applicative -> Alternative      Category
-                                  |               |              |                  |
-                                  v               v              v                  v
-                                  Bind ---------> Monad -------> MonadPlus        Arrow
+
+```haskell
+> :t (<*>)
+< (<*>) :: Applicative f => f (a -> b) -> f a -> f b
+> :t (<$>)
+< (<$>) :: Functor f => (a -> b) -> f a -> f b
+> lift3 :: Applicative f => (a -> b -> c -> d) -> f a -> f b -> f c -> f d
+> lift3 f x y z = f <$> x <*> y <*> z
 ```
+
+```haskell
+> Address <$> (Just "Gutestr. 45") <*> (Just "Zürich") <*> (Just "Zürich")
+< Just (Address {street = "Gutestr. 45", city = "Zürich", canton = "Zürich"})
+```
+
+## Typeclasses in JS
