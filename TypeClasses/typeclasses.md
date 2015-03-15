@@ -17,6 +17,7 @@ class Eq a where
   (/=) :: a -> a -> Bool
 
 data Ordering = LT | EQ | GT
+
 class Eq a => Ord a where
   compare :: a -> a -> Ordering
 ```
