@@ -22,9 +22,7 @@ class Eq a => Ord a where
   compare :: a -> a -> Ordering
 ```
 
-## Theorie
-
-### Semigroup (Halbgruppe)
+## Semigroup (Halbgruppe)
 
 The `(<>)` operator is for 'concatenation', and must be associative:
 `(a <> b) <> c = a <> (b <> c)`
@@ -34,7 +32,7 @@ class Semigroup a where
   (<>) :: forall a. a -> a -> a
 ```
 
-### Monoid
+## Monoid
 
 A monoid describes how to accumulate a result with the type `m`
 
@@ -43,7 +41,7 @@ class (Semigroup m) <= Monoid m where
   mempty :: m
 ```
 
-### Functor
+## Functor
 
 A functor has a `map` function `(<$>)`.
 
@@ -61,7 +59,7 @@ class Functor f where
   (<$>) :: forall a b. (a -> b) -> f a -> f b
 ```
 
-### Apply
+## Apply
 
 Apply works well together with a functor. You use the functor for the first
 argument and the apply for the rest.
@@ -78,14 +76,14 @@ class (Functor f) <= Apply f where
   (<*>) :: forall a b. f (a -> b) -> f a -> f b
 ```
 
-### Applicative
+## Applicative
 
 ```haskell
 class (Apply f) <= Applicative f where
   pure :: forall a. a -> f a
 ```
 
-### Traversable
+## Traversable
 
 ```haskell
 class (Functor t, Foldable t) <= Traversable t where
@@ -93,28 +91,28 @@ class (Functor t, Foldable t) <= Traversable t where
   sequence :: forall a f. (Applicative f) => t (f a) -> f (t a)
 ```
 
-### Bind
+## Bind
 
 ```haskell
 class (Apply m) <= Bind m where
   (>>=) :: forall a b. m a -> (a -> m b) -> m b
 ```
 
-### Semigroupoid
+## Semigroupoid
 
 ```haskell
 class Semigroupoid a where
   (<<<) :: forall b c d. a c d -> a b c -> a b d
 ```
 
-### Category
+## Category
 
 ```haskell
 class (Semigroupoid a) <= Category a where
   id :: forall t. a t t
 ```
 
-### Monad
+## Monad
 
 ```haskell
 class (Applicative m, Bind m) <= Monad m where
