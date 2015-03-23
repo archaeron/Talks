@@ -88,6 +88,12 @@ class (Apply f) <= Applicative f where
   pure :: forall a. a -> f a
 ```
 
+### Laws
+
+- `pure id <*> v = v`
+- `pure f <*> pure x = pure (f x)`
+- `u <*> pure y = pure ($ y) <*> u`
+
 ## Traversable
 
 ```haskell
