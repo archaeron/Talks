@@ -59,6 +59,11 @@ class Functor f where
   (<$>) :: forall a b. (a -> b) -> f a -> f b
 ```
 
+### Laws
+
+- `fmap id = id`
+- `fmap (g . h) = (fmap g) . (fmap h)`
+
 ## Apply
 
 Apply works well together with a functor. You use the functor for the first
