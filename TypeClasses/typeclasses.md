@@ -93,6 +93,11 @@ class (Apply f) <= Applicative f where
 - `pure id <*> v = v`
 - `pure f <*> pure x = pure (f x)`
 - `u <*> pure y = pure ($ y) <*> u`
+  `u <*> pure y = pure (\f -> f y) <*> u`
+
+  The order in which we evaluate the function and its argument doesn't matter.
+
+- `u <*> (v <*> w) = pure (.) <*> u <*> v <*> w`
 
 ## Traversable
 
