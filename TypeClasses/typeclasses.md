@@ -134,7 +134,7 @@ class (Semigroupoid a) <= Category a where
 class (Applicative m, Bind m) <= Monad m where
 ```
 
-## Applicative validation
+## Applicative validation (Haskell)
 
 ```haskell
 > import Control.Applicative
@@ -159,6 +159,16 @@ class (Applicative m, Bind m) <= Monad m where
 ```haskell
 > Address <$> (Just "Gutestr. 45") <*> (Just "Zürich") <*> (Just "Zürich")
 < Just (Address {street = "Gutestr. 45", city = "Zürich", canton = "Zürich"})
+```
+
+```haskell
+(<?>) Nothing err = Left err
+(<?>) (Just a) _ = Right a
+
+fullNameEither first middle last =
+  fullName <$> (first <?> "First name was missing")
+    <*> (middle <?> "Middle name was missing")
+    <*> (last <?> "Last name was missing")
 ```
 
 ## Typeclasses in JS
