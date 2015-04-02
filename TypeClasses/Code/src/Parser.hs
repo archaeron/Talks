@@ -31,7 +31,7 @@ parse (Parser p) = p
 
 -- this parser always fails
 failure :: Parser a
-failure	= Parser $ const Nothing
+failure = Parser $ const Nothing
 
 item :: Parser Char
 item =
@@ -44,14 +44,14 @@ item =
 		)
 
 (+++) :: Parser a -> Parser a -> Parser a
-p +++ q	=
+p +++ q =
 	Parser (\inp -> case parse p inp of
 		Nothing	->
 			parse q inp
 		value ->
 			value)
 
-sat	:: (Char -> Bool) -> Parser Char
+sat :: (Char -> Bool) -> Parser Char
 sat p =
 	do	x <- item
 		if p x then return x else failure
@@ -90,36 +90,13 @@ many1 p =
 		vs <- many p
 		return (v:vs)
 
+sepBy1 :: Parser a -> Parser sep -> Parser [a]
+sepBy1 p sep =
+	do	a <- p
+		as <- many $ do
+			sep
+			p
+		return (a:as)
+
 sepBy :: Parser a -> Parser sep -> Parser [a]
-sepBy p sep	=
-	do	element <- p
-		return []
-
-ident :: Parser String
-ident =
-	do	x <- lower
-		xs <- many alphanum
-		return (x:xs)
-
-nat	:: Parser Int
-nat	=
-	do	xs <- many1 digit
-		return (read xs)
-
-int	:: Parser Int
-int	=
-	(do	char '-'
-		n <- nat
-		return (-n))
-	+++ nat
-
-space :: Parser ()
-space =
-	do	many (sat isSpace)
-		return ()
-
-comment	:: Parser ()
-comment	=
-	do	string "---"
-		many (sat (/= '\n'))
-		return ()
+sepBy p sep	= (sepBy1 p sep) +++ return []

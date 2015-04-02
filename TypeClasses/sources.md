@@ -18,3 +18,6 @@ What I Wish I Knew When Learning Haskell
 Programming in Haskell
   - Graham Hutton
   - http://www.cs.nott.ac.uk/~gmh/book.html
+Fun With Categories
+  - Bartosz Milewski
+  - https://github.com/LambdaCon/2015/blob/master/Opening%20keynote%20-%20Fun%20with%20categories/slides/Fun%20with%20categories.pdf

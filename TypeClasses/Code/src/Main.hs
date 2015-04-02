@@ -6,15 +6,17 @@ import Control.Exception (evaluate)
 import Control.Monad (liftM)
 import Control.Applicative (pure, (<*>))
 import Data.Char
+import qualified Data.Map.Strict as Map
 
 import TypeClasses
 import Parser
+import JsonParser
 
 instance Arbitrary a => Arbitrary (Option a) where
-  arbitrary = frequency [(1, return None), (3, liftM Some arbitrary)]
+	arbitrary = frequency [(1, return None), (3, liftM Some arbitrary)]
 
-  shrink (Some x) = None : [ Some x' | x' <- shrink x ]
-  shrink _ = []
+	shrink (Some x) = None : [ Some x' | x' <- shrink x ]
+	shrink _ = []
 
 optionNeq :: (Eq a) => Option a -> Option a -> Bool
 optionNeq (Some a) (Some b) = a /= b
@@ -26,6 +28,7 @@ main :: IO ()
 main = hspec $ do
 	optionTests
 	parserTests
+	jsonTests
 
 optionTests = describe "Option" $ do
 
@@ -123,3 +126,69 @@ parserTests = describe "Parser" $ do
 		property $
 			\opt ->
 				parse failure opt == (Nothing :: Maybe (Char, String))
+
+	it "item works" $
+		property $
+			\opt ->
+				if opt /= ""
+				then
+					fmap (\(x, xs) -> x:xs) (parse item opt) == return opt
+				else
+					(parse item opt) == Nothing
+
+	it "item should retrieve the first element" $ do
+		parse item "Hello" `shouldBe` Just ('H', "ello")
+		parse item "a" `shouldBe` Just ('a', "")
+		parse item "" `shouldBe` Nothing
+
+	it "(+++) works correctly" $ do
+		parse (item +++ item) "Hello" `shouldBe` Just ('H', "ello")
+		parse (item +++ failure) "Hello" `shouldBe` Just ('H', "ello")
+		parse (failure +++ item) "Hello" `shouldBe` Just ('H', "ello")
+		parse (failure +++ failure) "Hello" `shouldBe` (Nothing :: Maybe (Char, String))
+
+	it "sat works correctly" $ do
+		parse digit "123" `shouldBe` Just ('1', "23")
+		parse lower "Hello" `shouldBe` Nothing
+		parse letter "1Hello" `shouldBe` Nothing
+		parse (char 'H') "Hello" `shouldBe` Just ('H', "ello")
+		parse (char 'e') "Hello" `shouldBe` Nothing
+
+	it "string works correctly" $ do
+		parse (string "12") "123" `shouldBe` Just ("12", "3")
+		parse (string "ello") "Hello" `shouldBe` Nothing
+		parse (string "H") "Hello" `shouldBe` Just ("H", "ello")
+		parse (string "") "Hello" `shouldBe` Just ("", "Hello")
+		parse (string "He") "" `shouldBe` Nothing
+		parse (string "hello") "hel" `shouldBe` Nothing
+
+	it "many and many1 work correctly" $ do
+		parse (many (string "12")) "12123" `shouldBe` Just (["12", "12"], "3")
+		parse (many digit) "123Hello" `shouldBe` Just (['1', '2', '3'], "Hello")
+		parse (many digit) "Hello" `shouldBe` Just ([], "Hello")
+		parse (many1 (string "12")) "12123" `shouldBe` Just (["12", "12"], "3")
+		parse (many1 digit) "123Hello" `shouldBe` Just (['1', '2', '3'], "Hello")
+		parse (many1 digit) "Hello" `shouldBe` Nothing
+
+	it "sepBy works correctly" $ do
+		parse (sepBy1 digit (char ',')) "1,2,3" `shouldBe` Just ("123", "")
+		parse (sepBy1 digit (char '-')) "1,2,3" `shouldBe` Just ("1", ",2,3")
+		parse (sepBy1 letter (char ',')) "1,2,3" `shouldBe` Nothing
+
+		parse (sepBy digit (char ',')) "1,2,3" `shouldBe` Just ("123", "")
+		parse (sepBy digit (char '-')) "1,2,3" `shouldBe` Just ("1", ",2,3")
+		parse (sepBy letter (char ',')) "1,2,3" `shouldBe` Just ([], "1,2,3")
+
+jsonTests = describe "jSON" $ do
+	it "converts correctly to strings" $ do
+		let jbool = JBool True
+		let jnumber = JNumber 56
+		let jstring = JString "Hello World"
+		let jarray = JArray [jbool, jnumber, jstring]
+		let jobject = JObject $ Map.fromList [("bool", jbool), ("number", jnumber), ("string", jstring)]
+
+		valueToString jbool `shouldBe` "true"
+		valueToString jnumber `shouldBe` "56"
+		valueToString jstring `shouldBe` "\"Hello World\""
+		valueToString jarray `shouldBe` "[true, 56, \"Hello World\"]"
+		valueToString jobject `shouldBe` "{\"bool\": true, \"number\": 56, \"string\": \"Hello World\"}"

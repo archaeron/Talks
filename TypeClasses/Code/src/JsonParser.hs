@@ -39,7 +39,7 @@ jObjectToString o =
 
 
 valueToString :: JValue -> String
-valueToString (JObject o) = "{ " ++ jObjectToString o ++ " }"
+valueToString (JObject o) = "{" ++ jObjectToString o ++ "}"
 valueToString (JArray a) = "[" ++ (List.intercalate ", " $ map valueToString a) ++ "]"
 valueToString (JString s) = show s
 valueToString (JNumber n) = show n
