@@ -1,5 +1,51 @@
 # Typeclasses (Purescript)
 
+## Beispiel Division
+
+### Simpel
+
+```haskell
+data Term = Constant Int | Division Term Term
+
+eval           :: Term -> Int
+eval (Con a)   =  a
+eval (Div t u) =  eval t / eval u
+```
+
+```haskell
+eval           :: Term -> Int
+eval (Con a)   =  a
+eval (Div t u) =  eval t / eval u
+
+answer         :: Term
+answer         =  Div (Div (Con 1972) (Con 2)) (Con 23)
+
+eval answer
+-- Div (Div (Con 1972) (Con 2)) (Con 23)
+-- Div (Div 1972 2) 23
+-- Div (1972 / 2) 23
+-- (1972 / 2) / 23
+-- 986 / 23
+-- 42
+```
+
+
+### Mit Divisionszähler
+
+```haskell
+type State = Int
+type M a = State -> (a, State)
+
+eval :: Term -> M Int
+eval (Con a) x = (a, x)
+eval (Div t u) x =
+    let (a, y) = eval t x in
+    let (b, z) = eval u y in
+    (a / b, z + 1)
+```
+
+# Typeclasses
+
 ## Einführung
 
 ```haskell
@@ -21,6 +67,48 @@ data Ordering = LT | EQ | GT
 class Eq a => Ord a where
   compare :: a -> a -> Ordering
 ```
+
+## Monads
+
+### Einführung
+
+```
+class Monad m where
+  return :: a -> m a
+  (>>=)  :: m a -> (a -> m b) -> m b
+```
+
+```
+eval :: Term -> M Int
+eval (Con a) = return a
+eval (Div t u) = eval t >>= \a -> eval u >>= \b -> return (a / b)
+```
+
+-- eval (Div t u) = ((eval t) >>= (\a -> ((eval u) >>= (\b -> (return (a / b)))))
+Der neue Code ist ein wenig komplizierter, aber viel flexibler.
+
+Um unsere zwei Beispiele von oben zu realisieren, müssen wir nur M, return und >>= verändern und kleine lokale Veränderungen vornehmen.
+
+Später werden wir eine schönere Art sehen das gleiche zu schreiben.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Semigroup (Halbgruppe)
 
