@@ -14,6 +14,7 @@ ghci
 - `:info`, `:i`: display information about the given names
 - `:print`, `:p`: Print the expression
 - `:edit`, `:e`: Load file in system editor
+- `:quit`, `:q`: Exit ghci
 
 ## Loading source files
 
