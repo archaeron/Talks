@@ -25,7 +25,7 @@ ghci
 
 ## Multi line input
 
-```
+```haskell
 :{
 let greet = do
 	putStrLn "Hello World"
