@@ -1,6 +1,10 @@
 # Typeclasses (Purescript)
 
+---
+
 ## Beispiel Division
+
+---
 
 ### Simpel
 
@@ -11,6 +15,8 @@ eval           :: Term -> Int
 eval (Con a)   =  a
 eval (Div t u) =  eval t / eval u
 ```
+
+---
 
 ```haskell
 eval           :: Term -> Int
@@ -29,6 +35,7 @@ eval answer
 -- 42
 ```
 
+---
 
 ### Mit Divisionszähler
 
