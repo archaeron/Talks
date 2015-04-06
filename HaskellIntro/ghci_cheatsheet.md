@@ -18,10 +18,10 @@ ghci
 
 ## Loading source files
 
-`:cd <dir>` changes the current directory to `<dir>`.
-`:load <file>` load a file and set it to the current target set.
-`:add <file>` add a file to the current target set.
-`import <module>` or `:module +<module>` to load a module
+- `:cd <dir>`: changes the current directory to `<dir>`.
+- `:load <file>`, `:l`: load a file and set it to the current target set.
+- `:add <file>`: add a file to the current target set.
+- `import <module>`, `:module +<module>`: load a module
 
 ## Multi line input
 
