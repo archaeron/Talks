@@ -8,12 +8,12 @@ ghci
 
 ## Useful Commands
 
-| :reload      | :r | reload the current module set             |
-| :type <expr> | :t | show the type of <expr>                   |
-| :kind <type> | :k | show the kind of <type>                   |
-| :info        | :i | display information about the given names |
-| :print       | :p | Print the expression                      |
-| :edit        | :e | Load file in system editor                |
+- `:reload`, `:r`: reload the current module set
+- `:type <expr>`, `:t`: show the type of `<expr>`
+- `:kind <type>`, `:k`: show the kind of <type>
+- `:info`, `:i`: display information about the given names
+- `:print`, `:p`: Print the expression
+- `:edit`, `:e`: Load file in system editor
 
 ## Loading source files
 
@@ -47,6 +47,8 @@ let greet = do
 
 ## References
 
-http://stackoverflow.com/a/21008377/1829891
 http://dev.stephendiehl.com/hask/#ghci
+
+http://stackoverflow.com/a/21008377/1829891
+
 https://downloads.haskell.org/~ghc/7.6.2/docs/html/users_guide/loading-source-files.html
