@@ -1,8 +1,7 @@
 # Introduction to Haskell
 
 
----------------------------------------------------
-
+---
 ## Assignments
 
 ```haskell
@@ -13,8 +12,7 @@ greetings :: String
 greetings = "Hello World"
 ```
 
----------------------------------------------------
-
+---
 ## Functions
 
 ```haskell
@@ -30,9 +28,7 @@ add43 = add 43
 -- add43 7 == 50
 ```
 
----------------------------------------------------
-
-
+---
 ## Recursion
 
 ```haskell
@@ -42,8 +38,7 @@ repeat n string = string ++ (repeat (n-1) string)
 -- repeat 3 "hi" == "hihihi"
 ```
 
----------------------------------------------------
-
+---
 ## Lists
 
 ```haskell
@@ -59,9 +54,8 @@ appendInt xs x = xs ++ [x]
 -- What is the result of: appendInt list 5
 ```
 
----------------------------------------------------
-
-## TITLE TODO
+---
+## Generic types 
 
 ```haskell
 prepend :: [a] -> a -> [a]
@@ -76,10 +70,10 @@ tuplify :: a -> b -> (a, b)
 tuplify x y = (x, y)
 ```
 
----------------------------------------------------
+---
+
 
 ## Higher order functions
-
 ```haskell
 map :: (a -> b) -> [a] -> [b]
 -- map (\x -> x + 1) list == map (+1) list
@@ -88,10 +82,10 @@ filter :: (a -> Bool) -> [a] -> [a]
 -- filter even list == [2, 4]
 ```
 
----------------------------------------------------
+---
+
 
 ## Laziness
-
 ```haskell
 naturals = [0..]
 
@@ -99,10 +93,10 @@ naturals = [0..]
 -- zip naturals [1, 2, 3] == [(0,1),(1,2),(2,3)]
 ```
 
----------------------------------------------------
+---
+
 
 ## List comprehension
-
 ```haskell
 odds :: [Int]
 odds = [x | x <- [0..], odd x]
@@ -116,13 +110,9 @@ take 10 [ (i,j) | i <- [1..], j <- [1..i-1], gcd i j == 1 ]
 
 ```
 
-Successive generators
-Guards
----------------------------------------------------
 
-
+---
 ## All together now
-
 ```haskell
 sieve :: [Int] -> [Int]
 sieve (p:xs) = p : sieve [x | x <- xs, x `mod` p /= 0]
@@ -133,35 +123,51 @@ primes = sieve [2..]
 -- take 10 primes == [2,3,5,7,11,13,17,19,23,29]
 ```
 
----------------------------------------------------
-
+---
 ## Maybe
 
-
 ```java
+public int foo (String text){
+	String parsedString = null;
+	try{
+		parsedString = parseString(text);
+	}catch(ParseException e) {
+		System.out.println("oh snap!")
+	}
 
+	int i = -1;
+	if(parsedString != null) {
+		i = bar(parsedString);
+	}
+
+	return i;
+}
 
 ```
+[Java 8 optional](http://www.oracle.com/technetwork/articles/java/java8-optional-2175753.html)
 
 
+---
 ```haskell
-
+foo :: Maybe String -> Maybe Int
+foo text = 
+	case parseString text of 
+	Just parsedString -> Maybe . bar parsedString
+	Nothing -> Nothing
 
 ```
 
----------------------------------------------------
-
-## Last but not least, a little intro to types...
+---
+## Last but not least, a little something about types
 
 ### Guess the following:
 
 ```haskell
-
 Int -> Char -> String
-
 ```
-[Hoogle: Int -> Char -> String](https://www.haskell.org/hoogle/?hoogle=Int+-%3E+Char+-%3E+String+-quickcheck)
 
----------------------------------------------------
+[Hoogle: Int -> Char -> String](https://www.haskell.org/hoogle/?hoogle=Int+-%3E+Char+-%3E+String+-quickcheck)
+---
+
 
 
