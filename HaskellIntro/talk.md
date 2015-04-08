@@ -55,7 +55,7 @@ appendInt xs x = xs ++ [x]
 ```
 
 ---
-## Generic types 
+## Type variables
 
 ```haskell
 prepend :: [a] -> a -> [a]
