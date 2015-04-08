@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>reveal.js - The HTML Presentation Framework</title>
+
+    <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+    <meta name="author" content="Hakim El Hattab">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+<div class="reveal">
+
+<!-- Any section element inside of this container is displayed as a slide -->
+<div class="slides">
+<section data-markdown=""><script type="text/template"># Introduction to Haskell
+
+
+
+
+
+</script></section><section data-markdown=""><script type="text/template">
+
+## Assignments
+
+
+
+```haskell
+
+number :: Int
+
+number = 5
+
+
+
+greetings :: String
+
+greetings = "Hello World"
+
+```
+
+
+
+</script></section><section data-markdown=""><script type="text/template">
+
+## Functions
+
+
+
+```haskell
+
+add :: Int -> Int -> Int
+
+add a b = a + b
+
+
+
+add42 :: Int -> Int
+
+add42 n = add 42 n
+
+-- add42 8 == 50
+
+
+
+add43 :: Int -> Int
+
+add43 = add 43
+
+-- add43 7 == 50
+
+```
+
+
+
+</script></section><section data-markdown=""><script type="text/template">
+
+## Recursion
+
+
+
+```haskell
+
+repeat :: Int -> String -> String
+
+repeat 1 string = string
+
+repeat n string = string ++ (repeat (n-1) string)
+
+-- repeat 3 "hi" == "hihihi"
+
+```
+
+
+
+</script></section><section data-markdown=""><script type="text/template">
+
+## Lists
+
+
+
+```haskell
+
+list :: [Int]
+
+list = [1, 2, 3, 4]
+
+
+
+prependInt :: [Int] -> Int -> [Int]
+
+prependInt xs x = x : xs
+
+-- prependInt list 0 == [0, 1, 2, 3, 4]
+
+
+
+appendInt :: [Int] -> Int -> [Int]
+
+appendInt xs x = xs ++ [x]
+
+-- What is the result of: appendInt list 5
+
+```
+
+
+
+</script></section><section data-markdown=""><script type="text/template">
+
+## Generic types 
+
+
+
+```haskell
+prepend :: [a] -> a -> [a]
+prepend xs x = x : xs
+
+-- prepend list 0 == [0, 1, 2, 3, 4]
+-- prepend "ello" 'H' == "Hello"
+
+
+append :: [a] -> a -> [a]
+append xs x = xs ++ [x]
+
+
+tuplify :: a -> b -> (a, b)
+tuplify x y = (x, y)
+
+```
+
+
+
+</script></section><section data-markdown=""><script type="text/template">
+
+
+
+
+
+## Higher order functions
+
+```haskell
+
+map :: (a -> b) -> [a] -> [b]
+
+-- map (\x -> x + 1) list == map (+1) list
+
+
+
+filter :: (a -> Bool) -> [a] -> [a]
+
+-- filter even list == [2, 4]
+
+```
+
+
+
+</script></section><section data-markdown=""><script type="text/template">
+
+
+
+
+
+## Laziness
+
+```haskell
+
+naturals = [0..]
+
+
+
+-- take 4 naturals == [0, 1, 2, 3]
+
+-- zip naturals [1, 2, 3] == [(0,1),(1,2),(2,3)]
+
+```
+
+
+
+</script></section><section data-markdown=""><script type="text/template">
+
+
+
+
+
+## List comprehension
+
+```haskell
+
+odds :: [Int]
+
+odds = [x | x <- [0..], odd x]
+
+
+
+carthesianProduct :: [a] -> [b] -> [(a, b)]
+
+carthesianProduct xs ys = [(x, y) | x <- xs, y <- ys]
+
+-- carthesianProduct [1, 2] [10, 11, 12] == [(1,10),(1,11),(1,12),(2,10),(2,11),(2,12)]
+
+
+
+take 10 [ (i,j) | i <- [1..], j <- [1..i-1], gcd i j == 1 ]
+
+--  [(2,1),(3,1),(3,2),(4,1),(4,3),(5,1),(5,2),(5,3),(5,4),(6,1)]
+
+
+
+```
+
+
+
+
+
+</script></section><section data-markdown=""><script type="text/template">
+
+## All together now
+
+```haskell
+
+sieve :: [Int] -> [Int]
+
+sieve (p:xs) = p : sieve [x | x <- xs, x `mod` p /= 0]
+
+
+
+primes :: [Int]
+
+primes = sieve [2..]
+
+
+
+-- take 10 primes == [2,3,5,7,11,13,17,19,23,29]
+
+```
+
+
+
+</script></section><section data-markdown=""><script type="text/template">
+
+## Maybe
+
+
+
+```java
+
+public int foo (String text){
+
+    String parsedString = null;
+
+    try{
+
+        parsedString = parseString(text);
+
+    }catch(ParseException e) {
+
+        System.out.println("oh snap!")
+
+    }
+
+
+
+    int i = -1;
+
+    if(parsedString != null) {
+
+        i = bar(parsedString);
+
+    }
+
+
+
+    return i;
+
+}
+
+
+
+```
+
+[Java 8 optional](http://www.oracle.com/technetwork/articles/java/java8-optional-2175753.html)
+
+
+
+
+
+</script></section><section data-markdown=""><script type="text/template">
+
+```haskell
+
+foo :: Maybe String -> Maybe Int
+
+foo text = 
+
+    case parseString text of 
+
+    Just parsedString -> Maybe . bar parsedString
+
+    Nothing -> Nothing
+
+
+
+```
+
+
+
+</script></section><section data-markdown=""><script type="text/template">
+
+## Last but not least, a little something about types
+
+
+
+### Guess the following:
+
+
+
+```haskell
+
+
+
+Int -> Char -> String
+
+
+
+```
+
+[Hoogle: Int -> Char -> String](https://www.haskell.org/hoogle/?hoogle=Int+-%3E+Char+-%3E+String+-quickcheck)
+
+</script></section><section data-markdown=""><script type="text/template">
+
+
+
+
+
+
+
+
+
+</script></section></div>
+
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+
+<script>
+
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+            { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+            { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'plugin/highlight/highlight.js' },
+            { src: 'plugin/zoom-js/zoom.js', async: true },
+            { src: 'plugin/notes/notes.js', async: true }
+        ]
+    });
+
+Reveal.addEventListener( 'ready', function( event ) {
+    hljs.initHighlightingOnLoad();
+} );
+</script>
+
+</body>
+</html>
