@@ -51,28 +51,14 @@ prependInt xs x = x : xs
 
 appendInt :: [Int] -> Int -> [Int]
 appendInt xs x = xs ++ [x]
--- What is the result of: appendInt list 5
+
+reverse :: [a] -> [a]  
+reverse [] = []  
+reverse (x:xs) = reverse xs ++ [x]   
 ```
 
----
-## Type variables
-
-```haskell
-prepend :: [a] -> a -> [a]
-prepend xs x = x : xs
--- prepend list 0 == [0, 1, 2, 3, 4]
--- prepend "ello" 'H' == "Hello"
-
-append :: [a] -> a -> [a]
-append xs x = xs ++ [x]
-
-tuplify :: a -> b -> (a, b)
-tuplify x y = (x, y)
-```
 
 ---
-
-
 ## Higher order functions
 ```haskell
 map :: (a -> b) -> [a] -> [b]
@@ -83,8 +69,6 @@ filter :: (a -> Bool) -> [a] -> [a]
 ```
 
 ---
-
-
 ## Laziness
 ```haskell
 naturals = [0..]
@@ -94,8 +78,6 @@ naturals = [0..]
 ```
 
 ---
-
-
 ## List comprehension
 ```haskell
 odds :: [Int]
@@ -123,6 +105,24 @@ primes = sieve [2..]
 -- take 10 primes == [2,3,5,7,11,13,17,19,23,29]
 ```
 
+
+---
+## Polymorphic Types
+
+```haskell
+prepend :: [a] -> a -> [a]
+prepend xs x = x : xs
+-- prepend list 0 == [0, 1, 2, 3, 4]
+-- prepend "ello" 'H' == "Hello"
+
+append :: [a] -> a -> [a]
+append xs x = xs ++ [x]
+
+tuplify :: a -> b -> (a, b)
+tuplify x y = (x, y)
+```
+
+
 ---
 ## Maybe
 
@@ -134,12 +134,10 @@ public int foo (String text){
 	}catch(ParseException e) {
 		System.out.println("oh snap!")
 	}
-
 	int i = -1;
 	if(parsedString != null) {
 		i = bar(parsedString);
 	}
-
 	return i;
 }
 
@@ -154,20 +152,59 @@ foo text =
 	case parseString text of 
 	Just parsedString -> Maybe . bar parsedString
 	Nothing -> Nothing
-
+-- Or even nicer:
+foo :: String -> Maybe Int
+foo text = fmap bar $ parseString text
 ```
 
 ---
-## Last but not least, a little something about types
+## Define Types
 
-### Guess the following:
+Type = synonyms
+Data = new constructs
+
+```haskell
+type Year = Int
+type Month = Int
+type Day = Int
+data Date = Date Year Month Day
+
+type Name = String
+
+data Celebration = 
+   		Birthday Name Date
+   	| 	Wedding Name Name Date
+```
+
+
+---
+## Guess the following
 
 ```haskell
 Int -> Char -> String
 ```
 
 [Hoogle: Int -> Char -> String](https://www.haskell.org/hoogle/?hoogle=Int+-%3E+Char+-%3E+String+-quickcheck)
+
 ---
+## Currying
 
+```haskell
+add' :: (Int, Int) -> Int
+add (x,y) = x + y
 
+add :: Int -> (Int -> Int)
+add = λx -> (λy -> x + y)
+
+add :: Int -> Int -> Int
+add x y = x + y
+```
+
+---
+## Outlook
+
+    - If it compiles, it works.
+    - Immutable by default
+    - No null
+    - Abstraction
 
