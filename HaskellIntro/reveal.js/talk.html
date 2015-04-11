@@ -1,36 +1,55 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-    <meta charset="utf-8">
-    <title>reveal.js - The HTML Presentation Framework</title>
-    <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
-    <meta name="author" content="Hakim El Hattab">
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-    <link rel="stylesheet" href="css/reveal.css">
-    <link rel="stylesheet" href="css/theme/black.css" id="theme">
-    <!-- Code syntax highlighting -->
-    <link rel="stylesheet" href="lib/css/zenburn.css">
-    <!-- Printing and PDF exports -->
-    <script>
-        var link = document.createElement( 'link' );
-        link.rel = 'stylesheet';
-        link.type = 'text/css';
-        link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-        document.getElementsByTagName( 'head' )[0].appendChild( link );
-    </script>
-    <!--[if lt IE 9]>
-    <script src="lib/js/html5shiv.js"></script>
-    <![endif]-->
+	<meta charset="utf-8">
+
+	<title>reveal.js - The HTML Presentation Framework</title>
+
+	<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+	<meta name="author" content="Hakim El Hattab">
+
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+	<!-- Code syntax highlighting -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
+
+	<!-- Printing and PDF exports -->
+	<script>
+		var link = document.createElement( 'link' );
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+		document.getElementsByTagName( 'head' )[0].appendChild( link );
+	</script>
+
+	<!--[if lt IE 9]>
+	<script src="lib/js/html5shiv.js"></script>
+	<![endif]-->
 </head>
+
 <body>
+
 <div class="reveal">
+
 <!-- Any section element inside of this container is displayed as a slide -->
 <div class="slides">
 <section data-markdown=""><script type="text/template"># Introduction to Haskell
 
 https://github.com/archaeron/Dojos
+
+</script></section><section data-markdown=""><script type="text/template">
+		- Functional
+		- Pure
+		- Statically Typed
+		- Lazy
+		- Type inference
 
 </script></section><section data-markdown=""><script type="text/template">
 ## Assignments
@@ -60,16 +79,6 @@ add43 = add 43
 ```
 
 </script></section><section data-markdown=""><script type="text/template">
-## Recursion
-
-```haskell
-repeat :: Int -> String -> String
-repeat 1 string = string
-repeat n string = string ++ (repeat (n-1) string)
--- repeat 3 "hi" == "hihihi"
-```
-
-</script></section><section data-markdown=""><script type="text/template">
 ## Lists
 
 ```haskell
@@ -88,25 +97,14 @@ reverse [] = []
 reverse (x:xs) = reverse xs ++ [x]   
 ```
 
-
 </script></section><section data-markdown=""><script type="text/template">
-## Higher order functions
-```haskell
-map :: (a -> b) -> [a] -> [b]
--- map (\x -> x + 1) list == map (+1) list
+## Common list functions
 
-filter :: (a -> Bool) -> [a] -> [a]
--- filter even list == [2, 4]
-```
+		- head
+		- tail
+		- a !! 2
+		- take
 
-</script></section><section data-markdown=""><script type="text/template">
-## Laziness
-```haskell
-naturals = [0..]
-
--- take 4 naturals == [0, 1, 2, 3]
--- zip naturals [1, 2, 3] == [(0,1),(1,2),(2,3)]
-```
 
 </script></section><section data-markdown=""><script type="text/template">
 ## List comprehension
@@ -123,6 +121,16 @@ take 10 [ (i,j) | i <- [1..], j <- [1..i-1], gcd i j == 1 ]
 
 ```
 
+</script></section><section data-markdown=""><script type="text/template">
+## Laziness
+```haskell
+naturals = [0..]
+
+ones = 1:ones
+
+-- take 4 naturals == [0, 1, 2, 3]
+-- zip naturals [1, 2, 3] == [(0,1),(1,2),(2,3)]
+```
 
 </script></section><section data-markdown=""><script type="text/template">
 ## All together now
@@ -161,17 +169,17 @@ positions :: Eq a => a -> [a] -> [Int]
 
 ```java
 public int foo (String text){
-    String parsedString = null;
-    try{
-        parsedString = parseString(text);
-    }catch(ParseException e) {
-        System.out.println("oh snap!")
-    }
-    int i = -1;
-    if(parsedString != null) {
-        i = bar(parsedString);
-    }
-    return i;
+	String parsedString = null;
+	try{
+		parsedString = parseString(text);
+	}catch(ParseException e) {
+		System.out.println("oh snap!")
+	}
+	int i = -1;
+	if(parsedString != null) {
+		i = bar(parsedString);
+	}
+	return i;
 }
 
 ```
@@ -182,13 +190,14 @@ public int foo (String text){
 ```haskell
 foo :: String -> Maybe Int
 foo text = 
-    case parseString text of 
-    Just parsedString -> Maybe . bar parsedString
-    Nothing -> Nothing
+	case parseString text of 
+	Just parsedString -> Maybe . bar parsedString
+	Nothing -> Nothing
 -- Or even nicer:
 foo :: String -> Maybe Int
 foo text = fmap bar $ parseString text
 ```
+
 
 </script></section><section data-markdown=""><script type="text/template">
 ## Define Types
@@ -205,8 +214,8 @@ data Date = Date Year Month Day
 type Name = String
 
 data Celebration = 
-        Birthday Name Date
-    |   Wedding Name Name Date
+   		Birthday Name Date
+   	| 	Wedding Name Name Date
 ```
 
 
@@ -218,6 +227,36 @@ Int -> Char -> String
 ```
 
 [Hoogle: Int -> Char -> String](https://www.haskell.org/hoogle/?hoogle=Int+-%3E+Char+-%3E+String+-quickcheck)
+
+
+</script></section><section data-markdown=""><script type="text/template">
+## Recursion
+
+```haskell
+repeat :: Int -> String -> String
+repeat 1 string = string
+repeat n string = string ++ (repeat (n-1) string)
+-- repeat 3 "hi" == "hihihi"
+
+	- Tail recursion
+
+```
+
+</script></section><section data-markdown=""><script type="text/template">
+## Higher order functions
+```haskell
+map :: (a -> b) -> [a] -> [b]
+-- map (\x -> x + 1) list == map (+1) list
+
+filter :: (a -> Bool) -> [a] -> [a]
+-- filter even list == [2, 4]
+```
+
+</script></section><section data-markdown=""><script type="text/template">
+## Functions
+
+		- Prefix mod 1 2
+		- Infix, i.e a `mod` b
 
 </script></section><section data-markdown=""><script type="text/template">
 ## Currying
@@ -233,6 +272,7 @@ add''' :: Int -> Int -> Int
 add''' x y = x + y
 ```
 
+
 </script></section><section data-markdown=""><script type="text/template">
 ## Outlook
 
@@ -247,10 +287,14 @@ add''' x y = x + y
 
 Keep calm and curry on - pjju%hfqr%fsi%hzww~%ts
 </script></section></div>
+
 </div>
+
 <script src="lib/js/head.min.js"></script>
 <script src="js/reveal.js"></script>
+
 <script>
+
     // Full list of configuration options available at:
     // https://github.com/hakimel/reveal.js#configuration
     Reveal.initialize({
@@ -258,7 +302,9 @@ Keep calm and curry on - pjju%hfqr%fsi%hzww~%ts
         progress: true,
         history: true,
         center: true,
+
         transition: 'slide', // none/fade/slide/convex/concave/zoom
+
         // Optional reveal.js plugins
         dependencies: [
             { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
@@ -269,9 +315,11 @@ Keep calm and curry on - pjju%hfqr%fsi%hzww~%ts
             { src: 'plugin/notes/notes.js', async: true }
         ]
     });
+
 Reveal.addEventListener( 'ready', function( event ) {
-    hljs.initHighlightingOnLoad();
+	hljs.initHighlightingOnLoad();
 } );
 </script>
+
 </body>
 </html>
