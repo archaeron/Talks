@@ -1,6 +1,13 @@
 # Introduction to Haskell
 
-![Repo](https://github.com/archaeron/Dojos)
+https://github.com/archaeron/Dojos
+
+---
+		- Functional
+		- Pure
+		- Statically Typed
+		- Lazy
+		- Type inference
 
 ---
 ## Assignments
@@ -30,16 +37,6 @@ add43 = add 43
 ```
 
 ---
-## Recursion
-
-```haskell
-repeat :: Int -> String -> String
-repeat 1 string = string
-repeat n string = string ++ (repeat (n-1) string)
--- repeat 3 "hi" == "hihihi"
-```
-
----
 ## Lists
 
 ```haskell
@@ -58,25 +55,14 @@ reverse [] = []
 reverse (x:xs) = reverse xs ++ [x]   
 ```
 
-
 ---
-## Higher order functions
-```haskell
-map :: (a -> b) -> [a] -> [b]
--- map (\x -> x + 1) list == map (+1) list
+## Common list functions
 
-filter :: (a -> Bool) -> [a] -> [a]
--- filter even list == [2, 4]
-```
+		- head
+		- tail
+		- a !! 2
+		- take
 
----
-## Laziness
-```haskell
-naturals = [0..]
-
--- take 4 naturals == [0, 1, 2, 3]
--- zip naturals [1, 2, 3] == [(0,1),(1,2),(2,3)]
-```
 
 ---
 ## List comprehension
@@ -93,6 +79,16 @@ take 10 [ (i,j) | i <- [1..], j <- [1..i-1], gcd i j == 1 ]
 
 ```
 
+---
+## Laziness
+```haskell
+naturals = [0..]
+
+ones = 1:ones
+
+-- take 4 naturals == [0, 1, 2, 3]
+-- zip naturals [1, 2, 3] == [(0,1),(1,2),(2,3)]
+```
 
 ---
 ## All together now
@@ -160,6 +156,7 @@ foo :: String -> Maybe Int
 foo text = fmap bar $ parseString text
 ```
 
+
 ---
 ## Define Types
 
@@ -189,6 +186,36 @@ Int -> Char -> String
 
 [Hoogle: Int -> Char -> String](https://www.haskell.org/hoogle/?hoogle=Int+-%3E+Char+-%3E+String+-quickcheck)
 
+
+---
+## Recursion
+
+```haskell
+repeat :: Int -> String -> String
+repeat 1 string = string
+repeat n string = string ++ (repeat (n-1) string)
+-- repeat 3 "hi" == "hihihi"
+
+	- Tail recursion
+
+```
+
+---
+## Higher order functions
+```haskell
+map :: (a -> b) -> [a] -> [b]
+-- map (\x -> x + 1) list == map (+1) list
+
+filter :: (a -> Bool) -> [a] -> [a]
+-- filter even list == [2, 4]
+```
+
+---
+## Functions
+
+		- Prefix mod 1 2
+		- Infix, i.e a `mod` b
+
 ---
 ## Currying
 
@@ -202,6 +229,7 @@ add'' = λx -> (λy -> x + y)
 add''' :: Int -> Int -> Int
 add''' x y = x + y
 ```
+
 
 ---
 ## Outlook
