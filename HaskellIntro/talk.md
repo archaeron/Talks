@@ -1,5 +1,6 @@
 # Introduction to Haskell
 
+![Repo](https://github.com/archaeron/Dojos)
 
 ---
 ## Assignments
@@ -120,6 +121,8 @@ append xs x = xs ++ [x]
 
 tuplify :: a -> b -> (a, b)
 tuplify x y = (x, y)
+
+positions :: Eq a => a -> [a] -> [Int]
 ```
 
 
@@ -147,7 +150,7 @@ public int foo (String text){
 
 ---
 ```haskell
-foo :: Maybe String -> Maybe Int
+foo :: String -> Maybe Int
 foo text = 
 	case parseString text of 
 	Just parsedString -> Maybe . bar parsedString
@@ -191,13 +194,13 @@ Int -> Char -> String
 
 ```haskell
 add' :: (Int, Int) -> Int
-add (x,y) = x + y
+add' (x,y) = x + y
 
-add :: Int -> (Int -> Int)
-add = λx -> (λy -> x + y)
+add'' :: Int - >(Int -> Int)
+add'' = λx -> (λy -> x + y)
 
-add :: Int -> Int -> Int
-add x y = x + y
+add''' :: Int -> Int -> Int
+add''' x y = x + y
 ```
 
 ---
@@ -206,5 +209,10 @@ add x y = x + y
     - If it compiles, it works.
     - Immutable by default
     - No null
+    - Refactoring
     - Abstraction
 
+---
+## Caesar Cipher
+
+Keep calm and curry on - pjju%hfqr%fsi%hzww~%ts
