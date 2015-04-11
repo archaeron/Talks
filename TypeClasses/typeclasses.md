@@ -1,4 +1,4 @@
-# Typeclasses (Purescript)
+# Typeclasses
 
 ---
 
@@ -51,7 +51,11 @@ eval (Div t u) x =
     (a / b, z + 1)
 ```
 
+---
+
 # Typeclasses
+
+---
 
 ## Einführung
 
@@ -64,6 +68,8 @@ instance Show Boolean where
   show false = "false"
 ```
 
+---
+
 ```haskell
 class Eq a where
   (==) :: a -> a -> Bool
@@ -75,7 +81,11 @@ class Eq a => Ord a where
   compare :: a -> a -> Ordering
 ```
 
+---
+
 ## Monads
+
+---
 
 ### Einführung
 
@@ -85,6 +95,8 @@ class Monad m where
   (>>=)  :: m a -> (a -> m b) -> m b
 ```
 
+---
+
 ```
 eval :: Term -> M Int
 eval (Con a) = return a
@@ -92,11 +104,6 @@ eval (Div t u) = eval t >>= \a -> eval u >>= \b -> return (a / b)
 ```
 
 -- eval (Div t u) = ((eval t) >>= (\a -> ((eval u) >>= (\b -> (return (a / b)))))
-Der neue Code ist ein wenig komplizierter, aber viel flexibler.
-
-Um unsere zwei Beispiele von oben zu realisieren, müssen wir nur M, return und >>= verändern und kleine lokale Veränderungen vornehmen.
-
-Später werden wir eine schönere Art sehen das gleiche zu schreiben.
 
 
 
@@ -111,11 +118,7 @@ Später werden wir eine schönere Art sehen das gleiche zu schreiben.
 
 
 
-
-
-
-
-
+---
 
 ## Semigroup (Halbgruppe)
 
@@ -127,6 +130,8 @@ class Semigroup a where
   (<>) :: forall a. a -> a -> a
 ```
 
+---
+
 ## Monoid
 
 A monoid describes how to accumulate a result with the type `m`
@@ -135,6 +140,8 @@ A monoid describes how to accumulate a result with the type `m`
 class (Semigroup m) <= Monoid m where
   mempty :: m
 ```
+
+---
 
 ## Functor
 
