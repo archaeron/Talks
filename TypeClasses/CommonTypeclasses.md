@@ -80,14 +80,13 @@ class (Apply f) <= Applicative f where
 
 ### Laws
 
-- `pure id <*> v = v`
-- `pure f <*> pure x = pure (f x)`
-- `u <*> pure y = pure ($ y) <*> u`
-  `u <*> pure y = pure (\f -> f y) <*> u`
+- `pure id <*> a = a`
+- `pure f <*> pure a = pure (f a)`
+- `a <*> pure b = pure ($ a) <*> b` (`a <*> pure b = pure (\f -> f a) <*> b`)
 
   The order in which we evaluate the function and its argument doesn't matter.
 
-- `u <*> (v <*> w) = pure (.) <*> u <*> v <*> w`
+- `a <*> (b <*> c) = pure (.) <*> a <*> b <*> c`
 
 ## Traversable
 
