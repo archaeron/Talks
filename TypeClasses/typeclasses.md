@@ -100,24 +100,24 @@ line t a = "eval(" ++ show t ++ ") = " ++ show a ++ "\n"
 
 ```haskell
 class Show a where
-  show :: a -> String
+    show :: a -> String
 
 instance Show Boolean where
-  show true = "true"
-  show false = "false"
+    show true = "true"
+    show false = "false"
 ```
 
 ---
 
 ```haskell
 class Eq a where
-  (==) :: a -> a -> Bool
-  (/=) :: a -> a -> Bool
+    (==) :: a -> a -> Bool
+    (/=) :: a -> a -> Bool
 
 data Ordering = LT | EQ | GT
 
 class Eq a => Ord a where
-  compare :: a -> a -> Ordering
+    compare :: a -> a -> Ordering
 ```
 
 ---
@@ -128,15 +128,15 @@ class Eq a => Ord a where
 
 ### Einführung
 
-```
+```haskell
 class Monad m where
-  return :: a -> m a
-  (>>=)  :: m a -> (a -> m b) -> m b
+    return :: a -> m a
+    (>>=)  :: m a -> (a -> m b) -> m b
 ```
 
 ---
 
-```
+```haskell
 eval :: Term -> M Int
 eval (Con a) = return a
 eval (Div t u) = eval t >>= \a -> eval u >>= \b -> return (a / b)
@@ -166,7 +166,7 @@ The `(<>)` operator is for 'concatenation', and must be associative:
 
 ```haskell
 class Semigroup a where
-  (<>) :: forall a. a -> a -> a
+    (<>) :: forall a. a -> a -> a
 ```
 
 ---
@@ -177,7 +177,7 @@ A monoid describes how to accumulate a result with the type `m`
 
 ```haskell
 class (Semigroup m) <= Monoid m where
-  mempty :: m
+    mempty :: m
 ```
 
 ---
@@ -197,7 +197,7 @@ Other names:
 
 ```haskell
 class Functor f where
-  (<$>) :: forall a b. (a -> b) -> f a -> f b
+    (<$>) :: forall a b. (a -> b) -> f a -> f b
 ```
 
 ### Laws
@@ -219,14 +219,14 @@ Other names:
 
 ```haskell
 class (Functor f) <= Apply f where
-  (<*>) :: forall a b. f (a -> b) -> f a -> f b
+    (<*>) :: forall a b. f (a -> b) -> f a -> f b
 ```
 
 ## Applicative
 
 ```haskell
 class (Apply f) <= Applicative f where
-  pure :: forall a. a -> f a
+    pure :: forall a. a -> f a
 ```
 
 ### Laws
@@ -252,21 +252,21 @@ class (Functor t, Foldable t) <= Traversable t where
 
 ```haskell
 class (Apply m) <= Bind m where
-  (>>=) :: forall a b. m a -> (a -> m b) -> m b
+    (>>=) :: forall a b. m a -> (a -> m b) -> m b
 ```
 
 ## Semigroupoid
 
 ```haskell
 class Semigroupoid a where
-  (<<<) :: forall b c d. a c d -> a b c -> a b d
+    (<<<) :: forall b c d. a c d -> a b c -> a b d
 ```
 
 ## Category
 
 ```haskell
 class (Semigroupoid a) <= Category a where
-  id :: forall t. a t t
+    id :: forall t. a t t
 ```
 
 ## Monad
@@ -307,9 +307,9 @@ class (Applicative m, Bind m) <= Monad m where
 (<?>) (Just a) _ = Right a
 
 fullNameEither first middle last =
-  fullName <$> (first <?> "First name was missing")
-    <*> (middle <?> "Middle name was missing")
-    <*> (last <?> "Last name was missing")
+    fullName <$> (first <?> "First name was missing")
+        <*> (middle <?> "Middle name was missing")
+        <*> (last <?> "Last name was missing")
 ```
 
 ---
