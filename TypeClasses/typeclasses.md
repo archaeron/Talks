@@ -37,7 +37,7 @@ eval answer
 
 ---
 
-### Division Counter
+### Counter
 
 ```haskell
 type State = Int
