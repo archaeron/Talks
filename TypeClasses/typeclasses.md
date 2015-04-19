@@ -9,7 +9,7 @@
 ### Simpel
 
 ```haskell
-data Term = Constant Int | Division Term Term
+data Term = Con Int | Div Term Term
 
 eval           :: Term -> Int
 eval (Con a)   =  a
@@ -37,7 +37,7 @@ eval answer
 
 ---
 
-### Mit Divisionszähler
+### Division Counter
 
 ```haskell
 type State = Int
@@ -49,6 +49,45 @@ eval (Div t u) x =
     let (a, y) = eval t x in
     let (b, z) = eval u y in
     (a / b, z + 1)
+```
+
+---
+
+### Exceptions
+
+```haskell
+type Exception = String
+data M a = Raise Exception | Return a
+
+eval :: Term -> M Int
+eval (Con a) = Return a
+eval (Div t u) =
+    case eval t of
+        Raise e -> Raise e
+        Return a ->
+            case eval u of
+                Raise e -> Raise e
+                Return b ->
+                    if b == 0
+                        then Raise "divide by zero"
+                        else Return (a / b)
+```
+
+### Output
+
+```haskell
+type Output = String
+type M a = (Output, a)
+
+eval :: Term -> M Int
+eval (Con a) = (line (Con a) a, a)
+eval (Div t u) =
+    let (x, a) = eval t in
+    let (y, b) = eval u in
+    (x ++ y ++ line (Div t u) (a / b), a / b)
+
+line :: Term -> Int -> Output
+line t a = "eval(" ++ show t ++ ") = " ++ show a ++ "\n"
 ```
 
 ---
