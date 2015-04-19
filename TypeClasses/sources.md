@@ -21,3 +21,5 @@
 * Fun With Categories
   - Bartosz Milewski
   - https://github.com/LambdaCon/2015/blob/master/Opening%20keynote%20-%20Fun%20with%20categories/slides/Fun%20with%20categories.pdf
+* Various
+  - [Typeclassopedia](https://wiki.haskell.org/Typeclassopedia)
