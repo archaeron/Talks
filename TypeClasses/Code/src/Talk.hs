@@ -1,5 +1,7 @@
 module MonadIntroduction where
 
+import Control.Monad (liftM, ap)
+
 data Term = Con Int | Div Term Term
 	deriving Show
 
@@ -48,4 +50,27 @@ evalException (Div t u) =
 					if b == 0
 						then Raise "divide by zero"
 						else Return (a `div` b)
---
+
+
+-- Counter 2
+
+-- Exception 2
+
+instance Functor MException where
+	fmap = liftM
+
+instance Applicative MException where
+	pure = return
+	(<*>) = ap
+
+instance Monad MException where
+	return = pure
+	a >>= k =
+		case a of
+			Raise e -> Raise e
+			Return a -> k a
+
+evalException2 :: Term -> MException Int
+evalException2 (Con a) = return a
+evalException2 (Div t u) =
+	(evalException2 t) >>= (\a -> evalException2 u >>= (\b -> return (a `div` b)))

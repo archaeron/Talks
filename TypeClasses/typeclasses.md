@@ -73,6 +73,8 @@ eval (Div t u) =
                         else Return (a / b)
 ```
 
+---
+
 ### Output
 
 ```haskell
@@ -140,9 +142,9 @@ class Monad m where
 eval :: Term -> M Int
 eval (Con a) = return a
 eval (Div t u) = eval t >>= \a -> eval u >>= \b -> return (a / b)
+-- eval (Div t u) = ((eval t) >>= (\a -> ((eval u) >>= (\b -> (return (a / b)))))
 ```
 
--- eval (Div t u) = ((eval t) >>= (\a -> ((eval u) >>= (\b -> (return (a / b)))))
 
 
 
@@ -153,9 +155,9 @@ eval (Div t u) = eval t >>= \a -> eval u >>= \b -> return (a / b)
 
 
 
+---
 
-
-
+# Other Typeclasses
 
 ---
 
