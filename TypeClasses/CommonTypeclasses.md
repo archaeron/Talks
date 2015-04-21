@@ -88,6 +88,10 @@ class (Apply f) <= Applicative f where
 
 - `a <*> (b <*> c) = pure (.) <*> a <*> b <*> c`
 
+### More information
+
+http://dev.stephendiehl.com/hask/#applicatives
+
 ## Traversable
 
 ```haskell
