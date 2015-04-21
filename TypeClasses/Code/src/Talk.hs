@@ -73,4 +73,9 @@ instance Monad MException where
 evalException2 :: Term -> MException Int
 evalException2 (Con a) = return a
 evalException2 (Div t u) =
-	(evalException2 t) >>= (\a -> evalException2 u >>= (\b -> return (a `div` b)))
+	(evalException2 t) >>=
+		(\a -> evalException2 u >>=
+			(\b ->
+			 	if b == 0
+					then Raise "divide by zero"
+					else return (a `div` b)))
