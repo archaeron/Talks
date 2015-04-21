@@ -64,7 +64,7 @@ instance Applicative MException where
 	(<*>) = ap
 
 instance Monad MException where
-	return = pure
+	return = Return
 	a >>= k =
 		case a of
 			Raise e -> Raise e
