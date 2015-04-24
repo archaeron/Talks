@@ -74,7 +74,7 @@ fmap (+1) $ Cons 4 $ Cons 10 Nil -- Cons 5 (Cons 11 Nil)
 
 ---
 
-Let's check the laws:
+check the first law: `fmap id = id`
 
 ```haskell
 instance Functor List where
@@ -82,23 +82,46 @@ instance Functor List where
     fmap f (Cons x xs) = Cons (f x) (fmap f xs)
 ```
 
-Laws:
+Check:
 
-- `fmap id = id`
-- `fmap (g . f) = (fmap g) . (fmap f)`
+```haskell
+-- check with Nil
+fmap id Nil = Nil
+
+-- check with `Cons x xs`
+fmap id (Cons x xs)
+    = Cons (id x) (fmap id xs)
+    = Cons x (fmap id xs)
+```
+
+---
+
+check the second law:
+
+`fmap (g . f) = (fmap g) . (fmap f)`
+
+```haskell
+instance Functor List where
+    fmap _ Nil = Nil
+    fmap f (Cons x xs) = Cons (f x) (fmap f xs)
+```
 
 Check:
 
 ```haskell
-fmap id Nil = Nil
-fmap id (Cons x xs) = Cons (id x) (fmap f xs)
-```
-```haskell
+-- check with Nil
 fmap (g . f) Nil = Nil
 (fmap g) . (fmap f) $ Nil = (fmap g) Nil = Nil
 
-fmap (g . f) (Cons x xs) = Cons (g . f $ x) (fmap (g . f) xs)
+-- check with `Cons x xs`
+fmap (g . f) (Cons x xs)
+    = Cons (g . f $ x) (fmap (g . f) xs)
+
+(fmap g) . (fmap f) $ (Cons x xs)
+    = (fmap g) (Cons (f x) (fmap f xs))
+    = Cons (g . f $ x) (fmap (g . f) xs)
 ```
+
 ---
 
 ## Applicative
@@ -109,20 +132,52 @@ class Functor f => Applicative f where
     (<*>) :: f (a -> b) -> f a -> f b
 ```
 
+### Laws
+
+- `pure id <*> a = a`
+- `pure f <*> pure a = pure (f a)`
+- `a <*> pure b = pure ($ a) <*> b`
+
 ---
 
-## Applicative validation (Haskell)
+## Applicative Functor
 
 ```haskell
-import Control.Applicative
+fmap  :: Functor f => (a -> b) -> f a -> f b
+(<$>) :: Functor f => (a -> b) -> f a -> f b
+(<*>) :: Applicative f => f (a -> b) -> f a -> f b
+```
 
-data Address = Address { street :: String, city :: String, canton :: String }
+---
 
-liftA3 Address (Just "Gutestr. 45") (Just "Zürich") (Just "Zürich")
--- Just (Address {street = "Gutestr. 45", city = "Zürich", canton = "Zürich"})
-liftA3 Address (Just "a") (Just "b") Nothing
+## Applicative validation
+
+```haskell
+fmap  :: Functor f => (a -> b) -> f a -> f b
+(<$>) :: Functor f => (a -> b) -> f a -> f b
+(<*>) :: Applicative f => f (a -> b) -> f a -> f b
+```
+
+```haskell
+data Address = Address
+    { street :: String
+    , city :: String
+    }
+-- :t Address
+-- Address :: String -> String -> String -> Address
+```
+```haskell
+Address
+    <$> (Just "Technikumstrasse 9")
+    <*> (Just "Winterthur")
+-- Just (Address
+--     { street = "Gutestr. 45"
+--     , city = "Zürich" })
+Address (Just "a") (Just "b") Nothing
 -- Nothing
 ```
+
+---
 
 ```haskell
 > :t (<*>)
@@ -270,25 +325,6 @@ evalExceptionEither (Div t u) =
 		if b == 0
 		then Left "divide by zero"
 		else Right $ a `div` b
-```
-
----
-
-### Output
-
-```haskell
-type Output = String
-type M a = (Output, a)
-
-eval :: Term -> M Int
-eval (Con a) = (line (Con a) a, a)
-eval (Div t u) =
-    let (x, a) = eval t in
-    let (y, b) = eval u in
-    (x ++ y ++ line (Div t u) (a / b), a / b)
-
-line :: Term -> Int -> Output
-line t a = "eval(" ++ show t ++ ") = " ++ show a ++ "\n"
 ```
 
 ---
