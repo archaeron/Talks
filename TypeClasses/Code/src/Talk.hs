@@ -44,19 +44,7 @@ addressEither street city =
         <$> (street <?> "the street is missing")
         <*> (city <?> "the city missing")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+-- Division
 
 data Term = Con Int | Div Term Term
     deriving Show
