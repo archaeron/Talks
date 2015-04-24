@@ -4,21 +4,21 @@ import Data.Char
 import Control.Applicative (Applicative(..))
 import Control.Monad (liftM, ap)
 
-newtype Parser a =
-	Parser (String -> Maybe (a, String))
+data Parser a =
+	P { parse :: String -> Maybe (a, String) }
 
 instance Functor Parser where
 	fmap = liftM
 
 instance Applicative Parser where
-	pure a = Parser (\input -> Just (a, input))
+	pure a = P (\input -> Just (a, input))
 	(<*>) = ap
 
 instance Monad Parser where
 	return = pure
 
 	p >>= f =
-		Parser $ \input ->
+		P $ \input ->
 			case parse p input of
 				Nothing ->
 					Nothing
@@ -26,16 +26,17 @@ instance Monad Parser where
 					parse (f value) output
 
 
-parse :: Parser a -> String -> Maybe (a, String)
-parse (Parser p) = p
-
 -- this parser always fails
 failure :: Parser a
-failure = Parser $ const Nothing
+failure = P $ const Nothing
+
+-- this parser always succeeds with the given value
+success :: a -> Parser a
+success a = P $ \input -> Just (a, input)
 
 item :: Parser Char
 item =
-	Parser
+	P
 		(\inp -> case inp of
 			[] ->
 				Nothing
@@ -45,7 +46,7 @@ item =
 
 (+++) :: Parser a -> Parser a -> Parser a
 p +++ q =
-	Parser (\inp -> case parse p inp of
+	P (\inp -> case parse p inp of
 		Nothing	->
 			parse q inp
 		value ->
