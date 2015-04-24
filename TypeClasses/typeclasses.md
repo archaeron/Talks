@@ -2,6 +2,80 @@
 
 ---
 
+## Introduction
+
+```haskell
+class Show a where
+    show :: a -> String
+
+instance Show Boolean where
+    show true = "true"
+    show false = "false"
+```
+
+---
+
+Let's use the `Show` typeclass
+
+```haskell
+describeValue :: Show a => a -> String
+describeValue a = "The values is: " ++ show a
+```
+
+---
+
+```haskell
+class Eq a where
+    (==) :: a -> a -> Bool
+    (/=) :: a -> a -> Bool
+
+data Ordering = LT | EQ | GT
+
+class Eq a => Ord a where
+    compare :: a -> a -> Ordering
+```
+
+---
+
+## Applicative validation (Haskell)
+
+```haskell
+import Control.Applicative
+
+data Address = Address { street :: String, city :: String, canton :: String }
+
+liftA3 Address (Just "Gutestr. 45") (Just "Zürich") (Just "Zürich")
+-- Just (Address {street = "Gutestr. 45", city = "Zürich", canton = "Zürich"})
+liftA3 Address (Just "a") (Just "b") Nothing
+-- Nothing
+```
+
+```haskell
+> :t (<*>)
+< (<*>) :: Applicative f => f (a -> b) -> f a -> f b
+> :t (<$>)
+< (<$>) :: Functor f => (a -> b) -> f a -> f b
+> lift3 :: Applicative f => (a -> b -> c -> d) -> f a -> f b -> f c -> f d
+> lift3 f x y z = f <$> x <*> y <*> z
+```
+
+```haskell
+> Address <$> (Just "Gutestr. 45") <*> (Just "Zürich") <*> (Just "Zürich")
+< Just (Address {street = "Gutestr. 45", city = "Zürich", canton = "Zürich"})
+```
+
+```haskell
+(<?>) Nothing err = Left err
+(<?>) (Just a) _ = Right a
+
+fullNameEither first middle last =
+    fullName <$> (first <?> "First name was missing")
+        <*> (middle <?> "Middle name was missing")
+        <*> (last <?> "Last name was missing")
+```
+
+---
+
 ## Beispiel Division
 
 ---
@@ -37,29 +111,13 @@ eval answer
 
 ---
 
-### Counter
-
-```haskell
-type State = Int
-type M a = State -> (a, State)
-
-eval :: Term -> M Int
-eval (Con a) x = (a, x)
-eval (Div t u) x =
-    let (a, y) = eval t x in
-    let (b, z) = eval u y in
-    (a / b, z + 1)
-```
-
----
-
 ### Exceptions
 
 ```haskell
 type Exception = String
-data M a = Raise Exception | Return a
+data MException a = Raise Exception | Return a
 
-eval :: Term -> M Int
+eval :: Term -> MException Int
 eval (Con a) = Return a
 eval (Div t u) =
     case eval t of
@@ -71,6 +129,73 @@ eval (Div t u) =
                     if b == 0
                         then Raise "divide by zero"
                         else Return (a / b)
+```
+
+---
+
+Let's make a monad for the exception
+
+```haskell
+class Applicative m => Monad m where
+    return :: a -> m a
+    (>>=) :: m a -> (a -> m b) -> m b
+```
+
+---
+
+```haskell
+type Exception = String
+data MException a = Raise Exception | Return a
+
+instance Monad MException where
+    return = Return
+    (Raise e)  >>= _ = Raise e
+    (Return a) >>= f = f a
+```
+
+---
+
+```haskell
+-- Monad with the bind (>>=) function
+evalException2 :: Term -> MException Int
+evalException2 (Con a) = return a
+evalException2 (Div t u) =
+	(evalException2 t) >>=
+		(\a -> evalException2 u >>=
+			(\b ->
+			 	if b == 0
+					then Raise "divide by zero"
+					else return (a `div` b)))
+```
+
+---
+
+```haskell
+-- Monad with do-notation
+evalException3 :: Term -> MException Int
+evalException3 (Con a) = return a
+evalException3 (Div t u) =
+	do
+		a <- evalException3 t
+		b <- evalException3 u
+		if b == 0
+		then Raise "divide by zero"
+		else Return $ a `div` b
+```
+
+---
+
+```haskell
+-- using `Either` instead of our own Monad
+evalExceptionEither :: Term -> Either String Int
+evalExceptionEither (Con a) = return a
+evalExceptionEither (Div t u) =
+	do
+		a <- evalExceptionEither t
+		b <- evalExceptionEither u
+		if b == 0
+		then Left "divide by zero"
+		else Right $ a `div` b
 ```
 
 ---
@@ -90,98 +215,6 @@ eval (Div t u) =
 
 line :: Term -> Int -> Output
 line t a = "eval(" ++ show t ++ ") = " ++ show a ++ "\n"
-```
-
----
-
-# Typeclasses
-
----
-
-## Einführung
-
-```haskell
-class Show a where
-    show :: a -> String
-
-instance Show Boolean where
-    show true = "true"
-    show false = "false"
-```
-
----
-
-```haskell
-class Eq a where
-    (==) :: a -> a -> Bool
-    (/=) :: a -> a -> Bool
-
-data Ordering = LT | EQ | GT
-
-class Eq a => Ord a where
-    compare :: a -> a -> Ordering
-```
-
----
-
-## Monads
-
----
-
-### Einführung
-
-```haskell
-class Monad m where
-    return :: a -> m a
-    (>>=)  :: m a -> (a -> m b) -> m b
-```
-
----
-
-```haskell
-eval :: Term -> M Int
-eval (Con a) = return a
-eval (Div t u) = eval t >>= \a -> eval u >>= \b -> return (a / b)
--- eval (Div t u) = ((eval t) >>= (\a -> ((eval u) >>= (\b -> (return (a / b)))))
-```
-
-
-
-## Applicative validation (Haskell)
-
-```haskell
-> import Control.Applicative
->
-> data Address = Address { street :: String, city :: String, canton :: String }
->
-> liftA3 Address (Just "Gutestr. 45") (Just "Zürich") (Just "Zürich")
-< Just (Address {street = "Gutestr. 45", city = "Zürich", canton = "Zürich"})
-> liftA3 Address (Just "a") (Just "b") Nothing
-< Nothing
-```
-
-```haskell
-> :t (<*>)
-< (<*>) :: Applicative f => f (a -> b) -> f a -> f b
-> :t (<$>)
-< (<$>) :: Functor f => (a -> b) -> f a -> f b
-> lift3 :: Applicative f => (a -> b -> c -> d) -> f a -> f b -> f c -> f d
-> lift3 f x y z = f <$> x <*> y <*> z
-```
-
-```haskell
-> Address <$> (Just "Gutestr. 45") <*> (Just "Zürich") <*> (Just "Zürich")
-< Just (Address {street = "Gutestr. 45", city = "Zürich", canton = "Zürich"})
-```
-
-```haskell
-(<?>) Nothing err = Left err
-(<?>) (Just a) _ = Right a
-
-fullNameEither first middle last =
-    fullName <$> (first <?> "First name was missing")
-        <*> (middle <?> "Middle name was missing")
-        <*> (last <?> "Last name was missing")
 ```
 
 ---
