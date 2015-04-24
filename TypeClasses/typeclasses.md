@@ -7,6 +7,13 @@
 ```haskell
 class Show a where
     show :: a -> String
+```
+
+---
+
+```haskell
+class Show a where
+    show :: a -> String
 
 instance Show Boolean where
     show True = "true"
@@ -58,8 +65,10 @@ Let's use the Functor typeclass
 ```haskell
 class Functor f where
     fmap :: (a -> b) -> f a -> f b
+```
 
-data List a = Cons a (List a) | Nil deriving Show
+```haskell
+data List a = Cons a (List a) | Nil
 
 instance Functor List where
     fmap _ Nil = Nil
@@ -69,12 +78,14 @@ instance Functor List where
 ```haskell
 fmap (+1) Nil -- Nil
 fmap (+1) $ Cons 4 Nil -- Cons 5 Nil
-fmap (+1) $ Cons 4 $ Cons 10 Nil -- Cons 5 (Cons 11 Nil)
+fmap (+1) $ Cons 4 (Cons 10 Nil) -- Cons 5 (Cons 11 Nil)
 ```
 
 ---
 
-check the first law: `fmap id = id`
+### Law 1
+
+`fmap id = id`
 
 ```haskell
 instance Functor List where
@@ -96,7 +107,7 @@ fmap id (Cons x xs)
 
 ---
 
-check the second law:
+### Law 2
 
 `fmap (g . f) = (fmap g) . (fmap f)`
 
@@ -111,7 +122,7 @@ Check:
 ```haskell
 -- check with Nil
 fmap (g . f) Nil = Nil
-(fmap g) . (fmap f) $ Nil = (fmap g) Nil = Nil
+(fmap g) . (fmap f) $ Nil = fmap g Nil = Nil
 
 -- check with `Cons x xs`
 fmap (g . f) (Cons x xs)
@@ -164,7 +175,7 @@ data Address = Address
     , city :: String
     }
 -- :t Address
--- Address :: String -> String -> String -> Address
+-- Address :: String -> String -> Address
 ```
 ```haskell
 Address
@@ -173,36 +184,47 @@ Address
 -- Just (Address
 --     { street = "Gutestr. 45"
 --     , city = "Zürich" })
-Address (Just "a") (Just "b") Nothing
+
+Address (Just "a") Nothing
 -- Nothing
 ```
 
 ---
 
 ```haskell
-> :t (<*>)
-< (<*>) :: Applicative f => f (a -> b) -> f a -> f b
-> :t (<$>)
-< (<$>) :: Functor f => (a -> b) -> f a -> f b
-> lift3 :: Applicative f => (a -> b -> c -> d) -> f a -> f b -> f c -> f d
-> lift3 f x y z = f <$> x <*> y <*> z
+liftA2 :: Applicative f => (a -> b -> c) -> f a -> f b -> f c
+liftA2 f x y = f <$> x <*> y
+
+liftA2 Address (Just "Technikumstrasse 9") (Just "Winterthur")
+-- Just (Address
+--     { street = "Gutestr. 45"
+--     , city = "Zürich" })
 ```
 
-```haskell
-> Address <$> (Just "Gutestr. 45") <*> (Just "Zürich") <*> (Just "Zürich")
-< Just (Address {street = "Gutestr. 45", city = "Zürich", canton = "Zürich"})
-```
+---
+
+## A better way for validation
 
 ```haskell
+(<?>) :: Maybe a -> String -> Either String a
 (<?>) Nothing err = Left err
 (<?>) (Just a) _ = Right a
 
-fullNameEither first middle last =
-    fullName <$> (first <?> "First name was missing")
-        <*> (middle <?> "Middle name was missing")
-        <*> (last <?> "Last name was missing")
+addressEither street city =
+    Address
+        <$> (street <?> "the street is missing")
+        <*> (city <?> "the city missing")
 ```
 
+```haskell
+addressEither (Just "Technikumstrasse 9") (Just "Winterthur")
+-- Right (Address {street = "Technikumstrasse 9", city = "Winterthur"})
+addressEither (Just "Technikumstrasse 9") Nothing
+-- Left "the city missing"
+addressEither Nothing (Just "Winterthur")
+-- Left "the street is missing"
+
+```
 ---
 
 ## Beispiel Division
