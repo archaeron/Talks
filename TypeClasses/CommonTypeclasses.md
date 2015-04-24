@@ -96,8 +96,8 @@ http://dev.stephendiehl.com/hask/#applicatives
 
 ```haskell
 class (Functor t, Foldable t) <= Traversable t where
-  traverse :: forall a b f. (Applicative f) => (a -> f b) -> t a -> f (t b)
-  sequence :: forall a f. (Applicative f) => t (f a) -> f (t a)
+    traverse :: forall a b f. (Applicative f) => (a -> f b) -> t a -> f (t b)
+    sequence :: forall a f. (Applicative f) => t (f a) -> f (t a)
 ```
 
 ## Bind
