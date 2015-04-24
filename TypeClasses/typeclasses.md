@@ -224,6 +224,9 @@ addressEither (Just "Technikumstrasse 9") Nothing
 addressEither Nothing (Just "Winterthur")
 -- Left "the street is missing"
 
+-- But we only get the first error
+addressEither Nothing Nothing
+-- Left "the street is missing"
 ```
 ---
 
@@ -289,15 +292,23 @@ Let's make a monad for the exception
 ```haskell
 class Applicative m => Monad m where
     return :: a -> m a
-    (>>=) :: m a -> (a -> m b) -> m b
+    (>>=)  :: m a -> (a -> m b) -> m b
 ```
 
 ---
 
 ```haskell
+class Applicative m => Monad m where
+    return :: a -> m a
+    (>>=)  :: m a -> (a -> m b) -> m b
+```
+
+```haskell
 type Exception = String
 data MException a = Raise Exception | Return a
+```
 
+```haskell
 instance Monad MException where
     return = Return
     (Raise e)  >>= _ = Raise e
@@ -311,12 +322,12 @@ instance Monad MException where
 evalException2 :: Term -> MException Int
 evalException2 (Con a) = return a
 evalException2 (Div t u) =
-	(evalException2 t) >>=
-		(\a -> evalException2 u >>=
-			(\b ->
-			 	if b == 0
-					then Raise "divide by zero"
-					else return (a `div` b)))
+    (evalException2 t) >>=
+        (\a -> evalException2 u >>=
+            (\b ->
+                if b == 0
+                then Raise "divide by zero"
+                else return (a `div` b)))
 ```
 
 ---
