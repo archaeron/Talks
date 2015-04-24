@@ -1,4 +1,207 @@
-# Typeclasses (Purescript)
+# Typeclasses
+
+---
+
+## Introduction
+
+```haskell
+class Show a where
+    show :: a -> String
+
+instance Show Boolean where
+    show true = "true"
+    show false = "false"
+```
+
+---
+
+Let's use the Show typeclass
+
+```haskell
+describeValue :: Show a => a -> String
+describeValue a = "The values is: " ++ show a
+```
+
+---
+
+## Eq and Ord typeclasses
+
+```haskell
+class Eq a where
+    (==) :: a -> a -> Bool
+    (/=) :: a -> a -> Bool
+
+data Ordering = LT | EQ | GT
+
+class Eq a => Ord a where
+    compare :: a -> a -> Ordering
+```
+
+---
+
+## Functor
+
+```haskell
+class Functor f where
+    fmap :: (a -> b) -> f a -> f b
+```
+
+### Laws
+
+- `fmap id = id`
+- `fmap (g . f) = (fmap g) . (fmap f)`
+
+---
+
+Let's use the Functor typeclass
+
+```haskell
+class Functor f where
+    fmap :: (a -> b) -> f a -> f b
+
+data List a = Cons a (List a) | Nil deriving Show
+
+instance Functor List where
+    fmap _ Nil = Nil
+    fmap f (Cons x xs) = Cons (f x) (fmap f xs)
+```
+
+```haskell
+fmap (+1) Nil -- Nil
+fmap (+1) $ Cons 4 Nil -- Cons 5 Nil
+fmap (+1) $ Cons 4 $ Cons 10 Nil -- Cons 5 (Cons 11 Nil)
+```
+
+---
+
+check the first law: `fmap id = id`
+
+```haskell
+instance Functor List where
+    fmap _ Nil = Nil
+    fmap f (Cons x xs) = Cons (f x) (fmap f xs)
+```
+
+Check:
+
+```haskell
+-- check with Nil
+fmap id Nil = Nil
+
+-- check with `Cons x xs`
+fmap id (Cons x xs)
+    = Cons (id x) (fmap id xs)
+    = Cons x (fmap id xs)
+```
+
+---
+
+check the second law:
+
+`fmap (g . f) = (fmap g) . (fmap f)`
+
+```haskell
+instance Functor List where
+    fmap _ Nil = Nil
+    fmap f (Cons x xs) = Cons (f x) (fmap f xs)
+```
+
+Check:
+
+```haskell
+-- check with Nil
+fmap (g . f) Nil = Nil
+(fmap g) . (fmap f) $ Nil = (fmap g) Nil = Nil
+
+-- check with `Cons x xs`
+fmap (g . f) (Cons x xs)
+    = Cons (g . f $ x) (fmap (g . f) xs)
+
+(fmap g) . (fmap f) $ (Cons x xs)
+    = (fmap g) (Cons (f x) (fmap f xs))
+    = Cons (g . f $ x) (fmap (g . f) xs)
+```
+
+---
+
+## Applicative
+
+```haskell
+class Functor f => Applicative f where
+    pure :: a -> f a
+    (<*>) :: f (a -> b) -> f a -> f b
+```
+
+### Laws
+
+- `pure id <*> a = a`
+- `pure f <*> pure a = pure (f a)`
+- `a <*> pure b = pure ($ a) <*> b`
+
+---
+
+## Applicative Functor
+
+```haskell
+fmap  :: Functor f => (a -> b) -> f a -> f b
+(<$>) :: Functor f => (a -> b) -> f a -> f b
+(<*>) :: Applicative f => f (a -> b) -> f a -> f b
+```
+
+---
+
+## Applicative validation
+
+```haskell
+fmap  :: Functor f => (a -> b) -> f a -> f b
+(<$>) :: Functor f => (a -> b) -> f a -> f b
+(<*>) :: Applicative f => f (a -> b) -> f a -> f b
+```
+
+```haskell
+data Address = Address
+    { street :: String
+    , city :: String
+    }
+-- :t Address
+-- Address :: String -> String -> String -> Address
+```
+```haskell
+Address
+    <$> (Just "Technikumstrasse 9")
+    <*> (Just "Winterthur")
+-- Just (Address
+--     { street = "Gutestr. 45"
+--     , city = "Zürich" })
+Address (Just "a") (Just "b") Nothing
+-- Nothing
+```
+
+---
+
+```haskell
+> :t (<*>)
+< (<*>) :: Applicative f => f (a -> b) -> f a -> f b
+> :t (<$>)
+< (<$>) :: Functor f => (a -> b) -> f a -> f b
+> lift3 :: Applicative f => (a -> b -> c -> d) -> f a -> f b -> f c -> f d
+> lift3 f x y z = f <$> x <*> y <*> z
+```
+
+```haskell
+> Address <$> (Just "Gutestr. 45") <*> (Just "Zürich") <*> (Just "Zürich")
+< Just (Address {street = "Gutestr. 45", city = "Zürich", canton = "Zürich"})
+```
+
+```haskell
+(<?>) Nothing err = Left err
+(<?>) (Just a) _ = Right a
+
+fullNameEither first middle last =
+    fullName <$> (first <?> "First name was missing")
+        <*> (middle <?> "Middle name was missing")
+        <*> (last <?> "Last name was missing")
+```
 
 ---
 
@@ -9,7 +212,7 @@
 ### Simpel
 
 ```haskell
-data Term = Constant Int | Division Term Term
+data Term = Con Int | Div Term Term
 
 eval           :: Term -> Int
 eval (Con a)   =  a
@@ -37,233 +240,115 @@ eval answer
 
 ---
 
-### Mit Divisionszähler
+### Exceptions
 
 ```haskell
-type State = Int
-type M a = State -> (a, State)
+type Exception = String
+data MException a = Raise Exception | Return a
 
-eval :: Term -> M Int
-eval (Con a) x = (a, x)
-eval (Div t u) x =
-    let (a, y) = eval t x in
-    let (b, z) = eval u y in
-    (a / b, z + 1)
+eval :: Term -> MException Int
+eval (Con a) = Return a
+eval (Div t u) =
+    case eval t of
+        Raise e -> Raise e
+        Return a ->
+            case eval u of
+                Raise e -> Raise e
+                Return b ->
+                    if b == 0
+                        then Raise "divide by zero"
+                        else Return (a / b)
 ```
 
-# Typeclasses
+---
 
-## Einführung
+Let's make a monad for the exception
 
 ```haskell
-class Show a where
-  show :: a -> String
-
-instance Show Boolean where
-  show true = "true"
-  show false = "false"
+class Applicative m => Monad m where
+    return :: a -> m a
+    (>>=) :: m a -> (a -> m b) -> m b
 ```
+
+---
 
 ```haskell
-class Eq a where
-  (==) :: a -> a -> Bool
-  (/=) :: a -> a -> Bool
+type Exception = String
+data MException a = Raise Exception | Return a
 
-data Ordering = LT | EQ | GT
-
-class Eq a => Ord a where
-  compare :: a -> a -> Ordering
+instance Monad MException where
+    return = Return
+    (Raise e)  >>= _ = Raise e
+    (Return a) >>= f = f a
 ```
 
-## Monads
-
-### Einführung
-
-```
-class Monad m where
-  return :: a -> m a
-  (>>=)  :: m a -> (a -> m b) -> m b
-```
-
-```
-eval :: Term -> M Int
-eval (Con a) = return a
-eval (Div t u) = eval t >>= \a -> eval u >>= \b -> return (a / b)
-```
-
--- eval (Div t u) = ((eval t) >>= (\a -> ((eval u) >>= (\b -> (return (a / b)))))
-Der neue Code ist ein wenig komplizierter, aber viel flexibler.
-
-Um unsere zwei Beispiele von oben zu realisieren, müssen wir nur M, return und >>= verändern und kleine lokale Veränderungen vornehmen.
-
-Später werden wir eine schönere Art sehen das gleiche zu schreiben.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## Semigroup (Halbgruppe)
-
-The `(<>)` operator is for 'concatenation', and must be associative:
-`(a <> b) <> c = a <> (b <> c)`
+---
 
 ```haskell
-class Semigroup a where
-  (<>) :: forall a. a -> a -> a
+-- Monad with the bind (>>=) function
+evalException2 :: Term -> MException Int
+evalException2 (Con a) = return a
+evalException2 (Div t u) =
+	(evalException2 t) >>=
+		(\a -> evalException2 u >>=
+			(\b ->
+			 	if b == 0
+					then Raise "divide by zero"
+					else return (a `div` b)))
 ```
 
-## Monoid
-
-A monoid describes how to accumulate a result with the type `m`
+---
 
 ```haskell
-class (Semigroup m) <= Monoid m where
-  mempty :: m
+-- Monad with do-notation
+evalException3 :: Term -> MException Int
+evalException3 (Con a) = return a
+evalException3 (Div t u) =
+	do
+		a <- evalException3 t
+		b <- evalException3 u
+		if b == 0
+		then Raise "divide by zero"
+		else Return $ a `div` b
 ```
 
-## Functor
-
-A functor has a `map` function `(<$>)`.
-
-It's also called `lift`, because it lifts a function into the functor:
-`a -> b` becomes `f a -> f b`.
-
-Other names:
-
-- Scala: `map`
-- Elm: `map` or `(<~)` (was `lift`)
-- Haskell: `fmap`
+---
 
 ```haskell
-class Functor f where
-  (<$>) :: forall a b. (a -> b) -> f a -> f b
+-- using `Either` instead of our own Monad
+evalExceptionEither :: Term -> Either String Int
+evalExceptionEither (Con a) = return a
+evalExceptionEither (Div t u) =
+	do
+		a <- evalExceptionEither t
+		b <- evalExceptionEither u
+		if b == 0
+		then Left "divide by zero"
+		else Right $ a `div` b
 ```
 
-### Laws
+---
 
-- `fmap id = id`
-- `fmap (g . h) = (fmap g) . (fmap h)`
+# Sources
 
-## Apply
+* Philip Wadler
+  - [Monads for functional programming](http://homepages.inf.ed.ac.uk/wadler/topics/monads.html)
+* Phil Freeman
+  - [PureScript by Example](https://leanpub.com/purescript/read)
 
-Apply works well together with a functor. You use the functor for the first
-argument and the apply for the rest.
+---
 
-Example: `lift3 f x y z = f <$> x <*> y <*> z`
+# Helps
 
-Other names:
-
-- Haskell: `ap`
-- Elm: `(~)`
-
-```haskell
-class (Functor f) <= Apply f where
-  (<*>) :: forall a b. f (a -> b) -> f a -> f b
-```
-
-## Applicative
-
-```haskell
-class (Apply f) <= Applicative f where
-  pure :: forall a. a -> f a
-```
-
-### Laws
-
-- `pure id <*> v = v`
-- `pure f <*> pure x = pure (f x)`
-- `u <*> pure y = pure ($ y) <*> u`
-  `u <*> pure y = pure (\f -> f y) <*> u`
-
-  The order in which we evaluate the function and its argument doesn't matter.
-
-- `u <*> (v <*> w) = pure (.) <*> u <*> v <*> w`
-
-## Traversable
-
-```haskell
-class (Functor t, Foldable t) <= Traversable t where
-  traverse :: forall a b f. (Applicative f) => (a -> f b) -> t a -> f (t b)
-  sequence :: forall a f. (Applicative f) => t (f a) -> f (t a)
-```
-
-## Bind
-
-```haskell
-class (Apply m) <= Bind m where
-  (>>=) :: forall a b. m a -> (a -> m b) -> m b
-```
-
-## Semigroupoid
-
-```haskell
-class Semigroupoid a where
-  (<<<) :: forall b c d. a c d -> a b c -> a b d
-```
-
-## Category
-
-```haskell
-class (Semigroupoid a) <= Category a where
-  id :: forall t. a t t
-```
-
-## Monad
-
-```haskell
-class (Applicative m, Bind m) <= Monad m where
-```
-
-## Applicative validation (Haskell)
-
-```haskell
-> import Control.Applicative
->
-> data Address = Address { street :: String, city :: String, canton :: String }
->
-> liftA3 Address (Just "Gutestr. 45") (Just "Zürich") (Just "Zürich")
-< Just (Address {street = "Gutestr. 45", city = "Zürich", canton = "Zürich"})
-> liftA3 Address (Just "a") (Just "b") Nothing
-< Nothing
-```
-
-```haskell
-> :t (<*>)
-< (<*>) :: Applicative f => f (a -> b) -> f a -> f b
-> :t (<$>)
-< (<$>) :: Functor f => (a -> b) -> f a -> f b
-> lift3 :: Applicative f => (a -> b -> c -> d) -> f a -> f b -> f c -> f d
-> lift3 f x y z = f <$> x <*> y <*> z
-```
-
-```haskell
-> Address <$> (Just "Gutestr. 45") <*> (Just "Zürich") <*> (Just "Zürich")
-< Just (Address {street = "Gutestr. 45", city = "Zürich", canton = "Zürich"})
-```
-
-```haskell
-(<?>) Nothing err = Left err
-(<?>) (Just a) _ = Right a
-
-fullNameEither first middle last =
-  fullName <$> (first <?> "First name was missing")
-    <*> (middle <?> "Middle name was missing")
-    <*> (last <?> "Last name was missing")
-```
-
-## Typeclasses in JS
+* Miran Lipovaca
+  - [Learn You a Haskell for Great Good](http://learnyouahaskell.com/)
+* Erik Meijer
+  - [Introduction to Functional Programming](https://www.edx.org/course/introduction-functional-programming-delftx-fp101x)
+* Stephen Diehl
+  - [What I Wish I Knew When Learning Haskell](http://dev.stephendiehl.com/hask/#applicatives)
+* Graham Hutton
+  - [Programming in Haskell](http://www.cs.nott.ac.uk/~gmh/book.html)
+* Bartosz Milewski
+  - [Fun With Categories](https://github.com/LambdaCon/2015/blob/master/Opening%20keynote%20-%20Fun%20with%20categories/slides/Fun%20with%20categories.pdf)
+* Various
+  - [Typeclassopedia](https://wiki.haskell.org/Typeclassopedia)
