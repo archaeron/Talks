@@ -9,8 +9,8 @@ class Show a where
     show :: a -> String
 
 instance Show Boolean where
-    show true = "true"
-    show false = "false"
+    show True = "true"
+    show False = "false"
 ```
 
 ---
