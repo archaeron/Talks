@@ -6,4 +6,4 @@ module Cipher1 where
     -- Tip: Check Data.Char docs for help
 
 
-    main = putStrLn . encode 5 text
+    main = putStrLn $ encode 5 text
