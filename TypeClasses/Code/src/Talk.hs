@@ -70,6 +70,7 @@ instance Monad MException where
 			Raise e -> Raise e
 			Return a -> k a
 
+-- Monad with the bind (>>=) function
 evalException2 :: Term -> MException Int
 evalException2 (Con a) = return a
 evalException2 (Div t u) =
@@ -79,3 +80,25 @@ evalException2 (Div t u) =
 			 	if b == 0
 					then Raise "divide by zero"
 					else return (a `div` b)))
+
+-- Monad with do-notation
+evalException3 :: Term -> MException Int
+evalException3 (Con a) = return a
+evalException3 (Div t u) =
+	do
+		a <- evalException3 t
+		b <- evalException3 u
+		if b == 0
+		then Raise "divide by zero"
+		else Return $ a `div` b
+
+-- using `Either` instead of our own Monad
+evalExceptionEither :: Term -> Either String Int
+evalExceptionEither (Con a) = return a
+evalExceptionEither (Div t u) =
+	do
+		a <- evalExceptionEither t
+		b <- evalExceptionEither u
+		if b == 0
+		then Left "divide by zero"
+		else Right $ a `div` b
