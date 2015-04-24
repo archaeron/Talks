@@ -12,4 +12,4 @@ module Cipher2 where
     encode :: Int -> String -> String
 
 
-    main = putStrLn . encode 5 text
+    main = putStrLn $ encode 5 text
