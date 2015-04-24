@@ -39,12 +39,17 @@ class Eq a => Ord a where
 
 ---
 
-## `Functor`
+## Functor
 
 ```haskell
 class Functor f where
     fmap :: (a -> b) -> f a -> f b
 ```
+
+### Laws
+
+- `fmap id = id`
+- `fmap (g . f) = (fmap g) . (fmap f)`
 
 ---
 
@@ -57,7 +62,7 @@ class Functor f where
 data List a = Cons a (List a) | Nil deriving Show
 
 instance Functor List where
-    fmap f Nil = Nil
+    fmap _ Nil = Nil
     fmap f (Cons x xs) = Cons (f x) (fmap f xs)
 ```
 
@@ -65,6 +70,43 @@ instance Functor List where
 fmap (+1) Nil -- Nil
 fmap (+1) $ Cons 4 Nil -- Cons 5 Nil
 fmap (+1) $ Cons 4 $ Cons 10 Nil -- Cons 5 (Cons 11 Nil)
+```
+
+---
+
+Let's check the laws:
+
+```haskell
+instance Functor List where
+    fmap _ Nil = Nil
+    fmap f (Cons x xs) = Cons (f x) (fmap f xs)
+```
+
+Laws:
+
+- `fmap id = id`
+- `fmap (g . f) = (fmap g) . (fmap f)`
+
+Check:
+
+```haskell
+fmap id Nil = Nil
+fmap id (Cons x xs) = Cons (id x) (fmap f xs)
+```
+```haskell
+fmap (g . f) Nil = Nil
+(fmap g) . (fmap f) $ Nil = (fmap g) Nil = Nil
+
+fmap (g . f) (Cons x xs) = Cons (g . f $ x) (fmap (g . f) xs)
+```
+---
+
+## Applicative
+
+```haskell
+class Functor f => Applicative f where
+    pure :: a -> f a
+    (<*>) :: f (a -> b) -> f a -> f b
 ```
 
 ---
