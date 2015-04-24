@@ -15,7 +15,7 @@ instance Show Boolean where
 
 ---
 
-Let's use the `Show` typeclass
+Let's use the Show typeclass
 
 ```haskell
 describeValue :: Show a => a -> String
@@ -23,6 +23,8 @@ describeValue a = "The values is: " ++ show a
 ```
 
 ---
+
+## Eq and Ord typeclasses
 
 ```haskell
 class Eq a where
@@ -33,6 +35,36 @@ data Ordering = LT | EQ | GT
 
 class Eq a => Ord a where
     compare :: a -> a -> Ordering
+```
+
+---
+
+## `Functor`
+
+```haskell
+class Functor f where
+    fmap :: (a -> b) -> f a -> f b
+```
+
+---
+
+Let's use the Functor typeclass
+
+```haskell
+class Functor f where
+    fmap :: (a -> b) -> f a -> f b
+
+data List a = Cons a (List a) | Nil deriving Show
+
+instance Functor List where
+    fmap f Nil = Nil
+    fmap f (Cons x xs) = Cons (f x) (fmap f xs)
+```
+
+```haskell
+fmap (+1) Nil -- Nil
+fmap (+1) $ Cons 4 Nil -- Cons 5 Nil
+fmap (+1) $ Cons 4 $ Cons 10 Nil -- Cons 5 (Cons 11 Nil)
 ```
 
 ---
