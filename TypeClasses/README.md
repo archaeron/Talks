@@ -9,12 +9,12 @@
 
 ### Source Files
 
-- `src/Main.hs` - The tests for the exercises are in this files.
-- `src/TypeClasses.hs` - There is a new `Option`-Type and
+- `Code/src/Main.hs` - The tests for the exercises are in this files.
+- `Code/src/TypeClasses.hs` - There is a new `Option`-Type and
 you need to implement the various typeclasses for it.
-- `src/Talks.hs` - This should be all the code used in the talk.
-- `src/Parser.hs` - A tiny parser implementation.
-- `src/JsonParser.hs` - Use the parser to parse JSON.
+- `Code/src/Talks.hs` - This should be all the code used in the talk.
+- `Code/src/Parser.hs` - A tiny parser implementation.
+- `Code/src/JsonParser.hs` - Use the parser to parse JSON.
 
 ### Solutions
 
