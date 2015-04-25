@@ -2,6 +2,21 @@
 
 ---
 
+## Quick reminder
+
+```haskell
+(.) :: (b -> c) -> (a -> b) -> a -> c -- infixr 9
+
+g . f == \x -> g (f x)
+```
+```haskell
+($) :: (a -> b) -> a -> b -- infixr 0
+
+fmap (+1) $ Cons 4 Nil
+```
+
+---
+
 ## Introduction
 
 ```haskell
