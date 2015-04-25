@@ -34,6 +34,9 @@ failure = P $ const Nothing
 success :: a -> Parser a
 success a = P $ \input -> Just (a, input)
 
+-- this parser reads the first character of the input string
+-- and returns it
+-- example: `parse item "hello" -- Just ('h',"ello")`
 item :: Parser Char
 item =
 	P
@@ -44,6 +47,7 @@ item =
 				Just (x, xs)
 		)
 
+-- tries the first parser. if it fails it tries the second one
 (+++) :: Parser a -> Parser a -> Parser a
 p +++ q =
 	P (\inp -> case parse p inp of

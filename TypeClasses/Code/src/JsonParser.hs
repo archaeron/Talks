@@ -3,6 +3,7 @@ module JsonParser where
 import qualified Data.Map.Strict as Map
 import qualified Data.List as List
 import Data.Either
+import Parser
 
 type JResult = Either String
 
@@ -19,28 +20,27 @@ data JValue
     | JNumber Int
     | JBool Bool
     | JNull
-
-instance Show JValue where
-    show (JObject o) = "JObject " ++ show o
-    show (JArray a) = "JArray " ++ show a
-    show (JString s) = "JString " ++ show s
-    show (JNumber s) = "JNumber " ++ show s
-    show (JBool s) = "JBool " ++ show s
-    show JNull = "JNull"
-
+    deriving Show
 
 class ToJSON a where
     toJSON :: a -> JValue
 
+-- converts a (key, value)-pair to a string
+showKeyValue :: (String, JValue) -> String
 showKeyValue (k, v) = show k ++ ": " ++ valueToString v
 
+-- converts a JObject to a comma separated list of (key, value)-pairs
+jObjectToString :: JObject -> String
 jObjectToString o =
     List.intercalate ", " (map showKeyValue $ Map.toAscList o)
 
+-- converts a JArray to a comma separated list of values
+jArrayToString :: JArray -> String
+jArrayToString a = List.intercalate ", " $ map valueToString a
 
 valueToString :: JValue -> String
 valueToString (JObject o) = "{" ++ jObjectToString o ++ "}"
-valueToString (JArray a) = "[" ++ (List.intercalate ", " $ map valueToString a) ++ "]"
+valueToString (JArray a) = "[" ++ jArrayToString a ++ "]"
 valueToString (JString s) = show s
 valueToString (JNumber n) = show n
 valueToString (JBool True) = "true"
@@ -58,3 +58,16 @@ encode = valueToString . toJSON
 
 class FromJSON a where
     parseJSON :: JValue -> JResult a
+
+parseJNull :: Parser JValue
+parseJNull = fmap (const JNull) $ string "null"
+
+parseJBool :: Parser JValue
+parseJBool =
+    fmap
+        (\b ->
+            case b of
+            "true" -> JBool True
+            _ -> JBool False
+        )
+        (string "true" +++ string "false")
