@@ -167,8 +167,10 @@ updatedPoint = { point | x <- 150 }
 ## Anonymous Functions
 
 ```elm
+successor : number -> number
 successor n = n + 1
 
+successor : number -> number
 successor = \n -> n + 1
 
 List.map (\n -> n + 1) [1, 2, 3]

@@ -69,29 +69,29 @@ defaultGame =
 
 -- COLORS
 
-red : Color
-red = rgb 255 0 0
+playerColor : Color
+playerColor = rgb 52 152 219
 
-green : Color
-green = rgb 0 255 0
+obstacleColor : Color
+obstacleColor = rgb 155 89 182
 
 -- SHAPES
 
-getPlayerShape : Shape
-getPlayerShape =
+playerShape : Shape
+playerShape =
   oval 15 15
 
-getObstacleShape : Shape
-getObstacleShape =
+playerForm : Form
+playerForm =
+  filled playerColor playerShape
+
+obstacleShape : Shape
+obstacleShape =
   rect pillarWidth pillarSize
 
 obstacleForm : Form
 obstacleForm =
-  filled green getObstacleShape
-
-playerForm : Form
-playerForm =
-  filled red getPlayerShape
+  filled obstacleColor obstacleShape
 
 drawForm : Form -> Positioned (Named a) -> Form
 drawForm form object =
@@ -111,9 +111,8 @@ view : (Int, Int) -> Game -> Element
 view (dimX, dimY) game =
   collage dimX dimY (drawPlayer game.player :: drawObstacle game.pillars)
 
-
-updatePlayerVel : Player -> Float -> Bool -> Player
-updatePlayerVel player vy isPressed =
+updatePlayer : Player -> Float -> Bool -> Player
+updatePlayer player vy isPressed =
   case isPressed of
     True ->
       { player
@@ -173,7 +172,7 @@ gameState =
         game
       | otherwise ->
         { game
-        | player <- updatePlayerVel game.player game.player.vy isPressed
+        | player <- updatePlayer game.player game.player.vy isPressed
         , pillars <- updateObstacles game.pillars
         }
   ) defaultGame keyAndTick
