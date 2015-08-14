@@ -1,7 +1,7 @@
 module Talk where
 
--- Assignments
---------------
+-- Values
+---------
 
 number : Int
 number = 5
@@ -22,6 +22,23 @@ add42 n = add 42 n
 add43 : Int -> Int
 add43 = add 43
 
+-- Conditionals
+---------------
+nearlyFizzBuzz n =
+  if
+    | n % 3 == 0 -> "Fizz"
+    | n % 5 == 0 -> "Buzz"
+    | otherwise -> toString n
+
+-- Pattern Matching
+-------------------
+
+fizzBuzz n =
+  case (n % 3, n % 5) of
+    (0, 0) -> "Fizz Buzz"
+    (0, _) -> "Fizz"
+    (_, 0) -> "Buzz"
+    (_, _) -> toString n
 
 -- Recursion
 ------------
@@ -52,6 +69,14 @@ type Answer = Yes | No
 type Name = HasName String | NoName
 
 type Option a = Some a | None
+
+frank = HasName "Fank"
+
+printName : Name -> String
+printName name =
+  case name of
+    HasName n -> n
+    NoName -> "I don't have a name :("
 
 -- Records
 ----------
