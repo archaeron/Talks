@@ -111,7 +111,10 @@ printName name =
     HasName n -> n
     NoName -> "I don't have a name :("
 
+-- Usage
+
 printName (HasName "Frank") -- "Frank"
+
 printName NoName -- "I don't have a name :("
 ```
 
@@ -167,25 +170,14 @@ updatedPoint = { point | x <- 150 }
 ## Anonymous Functions
 
 ```elm
+-- named function
 successor : number -> number
 successor n = n + 1
 
-successor : number -> number
-successor = \n -> n + 1
+List.map successor [1, 2, 3]
 
+-- anonymous function
 List.map (\n -> n + 1) [1, 2, 3]
-```
-
----
-
-## Higher order functions
-
-```elm
-List.map : (a -> b) -> List a -> List b
--- List.map (\x -> x + 1) [1, 2, 3, 4] == [2, 3, 4, 5]
-
-List.filter : (a -> Bool) -> List a -> List a
--- List.filter even [1, 2, 3, 4] == [2, 4]
 ```
 
 ---
@@ -199,20 +191,25 @@ justOne = Just 1
 nothing = Nothing
 
 parseNumber : String -> Maybe Int
+parseNumber string = ...
 
+-- usage
 parseNumber "hello" : Maybe Int -- Nothing
+
 parseNumber "23" : Maybe Int -- Just 23
 ```
 
 ---
 
 ```elm
--- can you implement Maybe.map yourself?
+-- can you implement (Maybe.)map yourself?
 
--- Maybe.map : (a -> b) -> Maybe a -> Maybe b
+-- map : (a -> b) -> Maybe a -> Maybe b
 
-Maybe.map (\x -> x + 1) justOne -- Just 2
-Maybe.map (\x -> x + 1) nothing -- Nothing
+-- examples
+map (\x -> x + 1) justOne -- Just 2
+
+map (\x -> x + 1) nothing -- Nothing
 ```
 
 ---
@@ -220,7 +217,7 @@ Maybe.map (\x -> x + 1) nothing -- Nothing
 ```elm
 map func maybe =
   case maybe of
-    Nothing -> Nothing
+    Nothing    -> Nothing
     Just value -> Just (func value)
 ```
 
@@ -241,10 +238,95 @@ type Result error value = Ok value | Error error
 
 ```elm
 Mouse.position : Signal (Int, Int)
+
+Keyboard.space : Signal Bool
+
 main : Signal Html
 
 -- Signal.map : (a -> result) -> Signal a -> Signal result
 -- Signal.foldp : (a -> state -> state) -> state -> Signal a -> Signal state
 -- Signal.filter : (a -> Bool) -> a -> Signal a -> Signal a
 -- Singal.sampleOn : Signal a -> Signal b -> Signal b
+```
+
+---
+
+## Mouse Position
+
+```elm
+-- Have
+Mouse.position : Signal (Int, Int)
+Signal.map : (a -> result) -> Signal a -> Signal result
+
+-- Want
+view : ?
+
+-- Need
+main : Signal Html
+```
+
+---
+
+```elm
+-- Have
+Mouse.position : Signal (Int, Int)
+Signal.map : (a -> result) -> Signal a -> Signal result
+-- Signal.map : ((Int, Int) -> Html)
+--              -> Signal (Int, Int)
+--              -> Signal Html
+
+-- Want
+view : ?
+
+-- Need
+main : Signal Html
+```
+
+---
+
+```elm
+-- Have
+Mouse.position : Signal (Int, Int)
+Signal.map : (a -> result) -> Signal a -> Signal result
+-- Signal.map : ((Int, Int) -> Html)
+--              -> Signal (Int, Int)
+--              -> Signal Html
+
+-- Want
+view : (Int, Int) -> Html
+
+-- Need
+main : Signal Html
+```
+
+---
+
+```elm
+-- Basics
+toString : a -> String
+
+-- Html
+text : String -> Html
+dl : List Attribute -> List Html -> Html
+dt : List Attribute -> List Html -> Html
+```
+
+---
+
+```elm
+import Html exposing (..)
+import Mouse
+
+view : (Int, Int) -> Html
+view (x, y) =
+  dl []
+    [ dt [] [ text "X:" ]
+    , dd [] [ text (toString x) ]
+    , dt [] [ text "Y:" ]
+    , dd [] [ text (toString y) ]
+    ]
+
+main : Signal Html
+main =
+  Signal.map view Mouse.position
 ```
