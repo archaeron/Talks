@@ -77,7 +77,7 @@ prepend xs x = x :: xs
 
 append : List a -> a -> List a
 append xs x = xs ++ [x]
--- What is the result of: append list 5
+-- append list 5 == [1, 2, 3, 4, 5]
 
 -- List.sort [2, 4, 1, 3] == [1, 2, 3, 4]
 ```
@@ -202,19 +202,20 @@ parseNumber "23" : Maybe Int -- Just 23
 ---
 
 ```elm
--- can you implement (Maybe.)map yourself?
+-- can you implement (Maybe.)map?
 
--- map : (a -> b) -> Maybe a -> Maybe b
+map : (a -> b) -> Maybe a -> Maybe b
 
 -- examples
-map (\x -> x + 1) justOne -- Just 2
+map (\x -> x + 1) (Just 1) -- Just 2
 
-map (\x -> x + 1) nothing -- Nothing
+map (\x -> x + 1) Nothing -- Nothing
 ```
 
 ---
 
 ```elm
+map : (a -> b) -> Maybe a -> Maybe b
 map func maybe =
   case maybe of
     Nothing    -> Nothing
@@ -226,10 +227,25 @@ map func maybe =
 ## Result
 
 ```elm
-type Result error value = Ok value | Error error
+type Result error value = Ok value | Err error
+```
 
--- Result.map : (a -> value) -> Result x a -> Result x value
--- Result.andThen : Result x a -> (a -> Result x b) -> Result x b
+---
+
+```elm
+-- can you implement (Result.)map?
+
+map : (a -> b) -> Result x a -> Result x b
+```
+
+---
+
+```elm
+map : (a -> b) -> Result x a -> Result x b
+map func result =
+    case result of
+        Err error -> Err error
+        Ok a -> Ok (func a)
 ```
 
 ---
@@ -242,11 +258,6 @@ Mouse.position : Signal (Int, Int)
 Keyboard.space : Signal Bool
 
 main : Signal Html
-
--- Signal.map : (a -> result) -> Signal a -> Signal result
--- Signal.foldp : (a -> state -> state) -> state -> Signal a -> Signal state
--- Signal.filter : (a -> Bool) -> a -> Signal a -> Signal a
--- Singal.sampleOn : Signal a -> Signal b -> Signal b
 ```
 
 ---
@@ -271,7 +282,7 @@ main : Signal Html
 -- Have
 Mouse.position : Signal (Int, Int)
 Signal.map : (a -> result) -> Signal a -> Signal result
--- Signal.map : ((Int, Int) -> Html)
+-- Signal.map : (?)
 --              -> Signal (Int, Int)
 --              -> Signal Html
 
@@ -307,8 +318,7 @@ toString : a -> String
 
 -- Html
 text : String -> Html
-dl : List Attribute -> List Html -> Html
-dt : List Attribute -> List Html -> Html
+div : List Attribute -> List Html -> Html
 ```
 
 ---
@@ -319,11 +329,11 @@ import Mouse
 
 view : (Int, Int) -> Html
 view (x, y) =
-  dl []
-    [ dt [] [ text "X:" ]
-    , dd [] [ text (toString x) ]
-    , dt [] [ text "Y:" ]
-    , dd [] [ text (toString y) ]
+  div []
+    [ text "X:"
+    , text (toString x)
+    , text "Y:"
+    , text (toString y)
     ]
 
 main : Signal Html
