@@ -340,3 +340,11 @@ main : Signal Html
 main =
   Signal.map view Mouse.position
 ```
+
+---
+
+## Documentation
+
+http://elm-lang.org
+http://elm-lang.org/docs
+http://package.elm-lang.org/packages
