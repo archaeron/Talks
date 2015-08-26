@@ -250,6 +250,19 @@ map func result =
 
 ---
 
+## Modules
+
+```elm
+module Game where
+
+import List                  -- List.map, List.fold, ...
+import List as L             -- L.map, L.fold, ...
+import List exposing (..)    -- map, fold, ...
+import List exposing (map)   -- map
+```
+
+---
+
 ## Signal
 
 ```elm
