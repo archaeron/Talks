@@ -358,6 +358,6 @@ main =
 
 ## Documentation
 
-http://elm-lang.org
-http://elm-lang.org/docs
-http://package.elm-lang.org/packages
+- http://elm-lang.org
+- http://elm-lang.org/docs
+- http://package.elm-lang.org/packages
