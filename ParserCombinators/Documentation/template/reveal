@@ -1,0 +1,25 @@
+<link rel="stylesheet" href="reveal.js/css/monokai_sublime.css">
+<script src="reveal.js/lib/js/jquery-2.1.4.min.js"></script>
+<script src="reveal.js/lib/js/highlight.pack.js"></script>
+
+<style>body { padding: 20px } pre { padding: 0 }</style>
+
+<script>
+$(function() {
+    $("pre > code").each(function(i, block) {
+        var codeClass = $(this).parent().attr("class");
+        if (codeClass == null || codeClass === "") {
+            $(this).addClass("hljs");
+        } else {
+            var map = {
+                js: "javascript"
+            };
+            if (map[codeClass]) {
+                codeClass = map[codeClass];
+            }
+            $(this).addClass(codeClass);
+            hljs.highlightBlock(this);
+        }
+    });
+});
+</script>

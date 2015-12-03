@@ -1,0 +1,109 @@
+Koch curve
+----------
+
+Angle = 90.0
+Start = F
+Rules =
+F -> F+F-F-F+F
+
+Sierpinski triangle
+-------------------
+
+Angle = 60.0
+Start = A
+Rules =
+A -> +B-A-B+
+B -> -A+B+A-
+
+Dragon curve
+------------
+
+Angle = 90.0
+Start = Fx
+Rules =
+x -> x+yF+
+y -> -Fx-y
+
+Plant
+-----
+
+Angle = 25.0
+Start = x
+Rules =
+x -> F-[[x]+x]+F[+Fx]-x
+F -> FF
+
+Koch Snowflake
+--------------
+
+Angle = 60.0
+Start = A++A++A
+Rules =
+A -> A-A++A-A
+
+--------------
+
+Angle = 60
+Start = A+A+A+A+A+A
+Rules =
+A -> +B-A-B+
+B -> -A+B+A-
+
+--------------
+
+Angle = 51.432
+Start = B-B-B-B-B-B-B
+Rules =
+A -> +B-A-B+
+B -> -A+B+A-
+
+Spiral
+------
+
+Angle = 46.0
+Start = A
+Rules =
+A -> A--A
+
+Star
+----
+
+Angle = 187.0
+Start = A
+Rules =
+A -> A-A
+
+------------
+
+Angle = 60.0
+Start = A+A+A+A+A+A
+Rules =
+A -> +A-A-A+
+
+------------
+
+Angle = 60.0
+Start = A+A+A+A+A+A
+Rules =
+A -> +A--A-+A+
+
+------------
+
+Angle = 60.0
+Start = A+A+A+A+A+A
+Rules =
+A -> +A+A+A+
+
+------------
+
+Angle = 90.0
+Start = A+A+A+A+A+A
+Rules =
+A -> -A-A+A+
+
+------------
+
+Angle = 60.0
+Start = A+A+A+A+A+A
+Rules =
+A -> -A-AA-
