@@ -28,8 +28,8 @@ map3 f a b c = f <$> a <*> b <*> c
 
 {-| Parse a string to an L-System
 -}
-parse : String -> Result.Result (List String) System
-parse s =
+parse : Parser a -> String -> Result.Result (List String) a
+parse parser s =
     let
         (parseResult, _) = Combine.parse parser s
     in
