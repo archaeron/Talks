@@ -1,6 +1,7 @@
 module System where
 
 import Debug
+import ParserDebug
 
 import Color
 import Display
@@ -48,8 +49,8 @@ update action model =
                 -- Get the system and the step the user has specified.
                 input = Input.update action model.input
                 -- Parse the specified system.
-                system = Parser.parse input.input
-                a = Debug.watch "System" system
+                system = Parser.parse Parser.parser input.input
+                a = Debug.watch "System" (Result.map ParserDebug.showSystem system)
                 -- Expand the system according to our rules.
                 expanded = Result.map (Expander.expandSystem input.step) system
                 --b = Debug.watch "Expanded" expanded
