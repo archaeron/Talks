@@ -35,10 +35,12 @@ add43 = add 43
 
 ```elm
 nearlyFizzBuzz n =
-  if
-    | n % 3 == 0 -> "Fizz"
-    | n % 5 == 0 -> "Buzz"
-    | otherwise -> toString n
+  if n % 3 == 0 then
+    "Fizz"
+  else if n % 5 == 0 then
+    "Buzz"
+  else
+    toString n
 ```
 
 ---
@@ -253,7 +255,7 @@ map func result =
 ## Modules
 
 ```elm
-module Game where
+module Game exposing (..)
 
 import List                  -- List.map, List.fold, ...
 import List as L             -- L.map, L.fold, ...
